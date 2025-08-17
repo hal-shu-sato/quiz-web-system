@@ -224,53 +224,61 @@ export default function AdminPanel({ id }: { id: string }) {
         </Toolbar>
       </AppBar>
       <Container style={{ marginTop: '20px' }}>
-        <Grid container spacing={2}>
-          <Grid size={8}>
-            <Stack spacing={2}>
+        <Stack spacing={2}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <StateChangeButtons
                 onClick={(state) => {
                   console.log(`State changed to: ${state}`);
                 }}
               />
-              <ProblemCard title="Sample Problem" point={10} />
-              <Answer
-                answers={[
-                  {
-                    id: '1',
-                    answer_text: 'Sample Answer 1',
-                    result: 'correct',
-                  },
-                  {
-                    id: '2',
-                    answer_image_url: 'https://picsum.photos/300',
-                    result: 'incorrect',
-                  },
-                ]}
-              />
-            </Stack>
-          </Grid>
-          <Grid size={4}>
-            <Stack spacing={2}>
+            </Grid>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <ScreenChangeButtons
                 onClick={(screen) => {
                   console.log(`Screen changed to: ${screen}`);
                 }}
               />
-              <ParticipantList
-                participants={[
-                  { id: '1', name: 'Alice', score: 100 },
-                  { id: '2', name: 'Bob', score: 80 },
-                ]}
-              />
-              <AnswerOrderList
-                participants={[
-                  { id: '1', name: 'Alice', score: 100, answerOrder: 1 },
-                  { id: '2', name: 'Bob', score: 80, answerOrder: 2 },
-                ]}
-              />
-            </Stack>
+            </Grid>
           </Grid>
-        </Grid>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, lg: 8 }}>
+              <Stack spacing={2}>
+                <ProblemCard title="Sample Problem" point={10} />
+                <Answer
+                  answers={[
+                    {
+                      id: '1',
+                      answer_text: 'Sample Answer 1',
+                      result: 'correct',
+                    },
+                    {
+                      id: '2',
+                      answer_image_url: 'https://picsum.photos/300',
+                      result: 'incorrect',
+                    },
+                  ]}
+                />
+              </Stack>
+            </Grid>
+            <Grid size={{ xs: 12, lg: 4 }}>
+              <Stack spacing={2}>
+                <ParticipantList
+                  participants={[
+                    { id: '1', name: 'Alice', score: 100 },
+                    { id: '2', name: 'Bob', score: 80 },
+                  ]}
+                />
+                <AnswerOrderList
+                  participants={[
+                    { id: '1', name: 'Alice', score: 100, answerOrder: 1 },
+                    { id: '2', name: 'Bob', score: 80, answerOrder: 2 },
+                  ]}
+                />
+              </Stack>
+            </Grid>
+          </Grid>
+        </Stack>
       </Container>
     </>
   );
