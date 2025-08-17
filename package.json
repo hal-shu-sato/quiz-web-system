@@ -1,19 +1,19 @@
 {
-  "name": "next-app-template",
+  "name": "quiz-web-system-client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "dev": "next dev --turbopack",
+    "fix": "run-s fix:next fix:prettier",
+    "fix:next": "next lint --fix",
+    "fix:prettier": "prettier --write .",
     "lint": "run-s -c lint:ts lint:next lint:prettier",
     "lint:next": "next lint",
     "lint:prettier": "prettier --check .",
     "lint:ts": "tsc --incremental false --noEmit",
-    "fix": "run-s fix:next fix:prettier",
-    "fix:next": "next lint --fix",
-    "fix:prettier": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "start": "next start"
   },
   "dependencies": {
     "next": "^15",
