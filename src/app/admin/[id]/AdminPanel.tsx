@@ -2,6 +2,7 @@
 
 import {
   AppBar,
+  type Breakpoint,
   Button,
   Card,
   CardActions,
@@ -10,6 +11,7 @@ import {
   CardMedia,
   Container,
   Grid,
+  type GridSize,
   Stack,
   Toolbar,
   Typography,
@@ -212,6 +214,14 @@ function AnswerOrderList({
   );
 }
 
+// from '@mui/material/esm/Grid/Grid.d.ts'
+type ResponsiveStyleValue<T> =
+  | T
+  | Array<T | null>
+  | { [key in Breakpoint]?: T | null };
+const leftPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 8 };
+const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };
+
 export default function AdminPanel({ id }: { id: string }) {
   return (
     <>
@@ -226,14 +236,14 @@ export default function AdminPanel({ id }: { id: string }) {
       <Container style={{ marginTop: '20px' }}>
         <Stack spacing={2}>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, lg: 8 }}>
+            <Grid size={leftPanelSize}>
               <StateChangeButtons
                 onClick={(state) => {
                   console.log(`State changed to: ${state}`);
                 }}
               />
             </Grid>
-            <Grid size={{ xs: 12, lg: 4 }}>
+            <Grid size={rightPanelSize}>
               <ScreenChangeButtons
                 onClick={(screen) => {
                   console.log(`Screen changed to: ${screen}`);
@@ -242,7 +252,7 @@ export default function AdminPanel({ id }: { id: string }) {
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, lg: 8 }}>
+            <Grid size={leftPanelSize}>
               <Stack spacing={2}>
                 <ProblemCard title="Sample Problem" point={10} />
                 <Answer
@@ -261,7 +271,7 @@ export default function AdminPanel({ id }: { id: string }) {
                 />
               </Stack>
             </Grid>
-            <Grid size={{ xs: 12, lg: 4 }}>
+            <Grid size={rightPanelSize}>
               <Stack spacing={2}>
                 <ParticipantList
                   participants={[
