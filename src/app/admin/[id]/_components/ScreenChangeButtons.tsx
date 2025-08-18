@@ -1,7 +1,7 @@
 import {
   Button,
   Card,
-  CardContent,
+  CardActions,
   CardHeader,
   Grid,
   type GridSize,
@@ -19,7 +19,7 @@ export default function ScreenChangeButtons({
   return (
     <Card>
       <CardHeader title="画面変更" />
-      <CardContent>
+      <CardActions sx={{ display: 'inherit' }}>
         <Grid container spacing={2}>
           <Grid size={gridSize}>
             <Button fullWidth onClick={() => onClick('linked')}>
@@ -42,7 +42,7 @@ export default function ScreenChangeButtons({
             </Button>
           </Grid>
         </Grid>
-      </CardContent>
+      </CardActions>
     </Card>
   );
 }

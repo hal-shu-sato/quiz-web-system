@@ -1,7 +1,7 @@
 import {
   Button,
   Card,
-  CardContent,
+  CardActions,
   CardHeader,
   Grid,
   type GridSize,
@@ -19,7 +19,7 @@ export default function StateChangeButtons({
   return (
     <Card>
       <CardHeader title="状態変更" />
-      <CardContent>
+      <CardActions sx={{ display: 'inherit' }}>
         <Grid container spacing={2}>
           <Grid size={gridSize}>
             <Button fullWidth onClick={() => onClick('wait')}>
@@ -52,7 +52,7 @@ export default function StateChangeButtons({
             </Button>
           </Grid>
         </Grid>
-      </CardContent>
+      </CardActions>
     </Card>
   );
 }
