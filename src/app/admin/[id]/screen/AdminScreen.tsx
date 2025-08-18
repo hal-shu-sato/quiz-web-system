@@ -1,16 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { adminSocket } from '@/socket';
 
 import { ResultScreen, ScoreScreen } from './_components';
 
-export default function AdminScreen({ id }: { id: string }) {
-  const [screen, setScreen] = useState<'result' | 'score'>('result');
+type ScreenStates = 'answers' | 'judges' | 'scores';
 
-  if (screen === 'result') {
+export default function AdminScreen({ id }: { id: string }) {
+  const [screen, setScreen] = useState<ScreenStates>('answers');
+
+  useEffect(() => {
+    function onConnect() {
+      console.log('Admin socket connected');
+
+      adminSocket.io.engine.on('upgrade', (transport) => {
+        console.log(`Transport upgraded to: ${transport.name}`);
+      });
+    }
+
+    function onUpdateScreen(newScreen: ScreenStates) {
+      console.log(`Screen state changed to: ${newScreen}`);
+      setScreen(newScreen);
+    }
+
+    function onDisconnect() {
+      console.log('Admin socket disconnected');
+    }
+
+    if (adminSocket.connected) {
+      onConnect();
+    }
+
+    adminSocket.on('connect', onConnect);
+    adminSocket.on('screen:update', onUpdateScreen);
+    adminSocket.on('disconnect', onDisconnect);
+
+    return () => {
+      adminSocket.off('connect', onConnect);
+      adminSocket.off('screen:update', onUpdateScreen);
+      adminSocket.off('disconnect', onDisconnect);
+    };
+  }, []);
+
+  if (screen === 'answers' || screen === 'judges') {
     return (
       <ResultScreen
-        showJudges={false}
+        showJudges={screen === 'judges'}
         results={[
           {
             id: '1',
@@ -57,7 +94,7 @@ export default function AdminScreen({ id }: { id: string }) {
     );
   }
 
-  if (screen === 'score') {
+  if (screen === 'scores') {
     return (
       <ScoreScreen
         participants={[
