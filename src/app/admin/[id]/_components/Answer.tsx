@@ -29,7 +29,7 @@ export default function Answer({
       <CardHeader title="回答一覧" />
       <CardContent>
         {answers.map((answer) => (
-          <Card key={answer.id} style={{ marginBottom: '10px' }}>
+          <Card key={answer.id} sx={{ mb: 2 }}>
             <CardHeader
               title={`回答ID: ${answer.id}`}
               subheader={`結果: ${answer.result}`}
