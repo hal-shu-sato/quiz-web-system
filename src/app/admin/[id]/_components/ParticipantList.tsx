@@ -2,8 +2,9 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Stack,
-  Typography,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 
 export default function ParticipantList({
@@ -19,13 +20,16 @@ export default function ParticipantList({
     <Card>
       <CardHeader title="参加者一覧" />
       <CardContent>
-        <Stack spacing={1}>
+        <List>
           {participants.map((participant) => (
-            <Typography key={participant.id}>
-              {participant.name} - スコア: {participant.score}
-            </Typography>
+            <ListItem key={participant.id}>
+              <ListItemText
+                primary={participant.name}
+                secondary={`ID: ${participant.id} - スコア: ${participant.score}`}
+              />
+            </ListItem>
           ))}
-        </Stack>
+        </List>
       </CardContent>
     </Card>
   );

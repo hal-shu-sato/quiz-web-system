@@ -2,8 +2,9 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Stack,
-  Typography,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 
 export default function AnswerOrderList({
@@ -20,14 +21,16 @@ export default function AnswerOrderList({
     <Card>
       <CardHeader title="回答順一覧" />
       <CardContent>
-        <Stack spacing={1}>
+        <List>
           {participants.map((participant) => (
-            <Typography key={participant.id}>
-              {participant.name} - スコア: {participant.score} - 回答順:{' '}
-              {participant.answerOrder}
-            </Typography>
+            <ListItem key={participant.id}>
+              <ListItemText
+                primary={participant.name}
+                secondary={`ID: ${participant.id} - スコア: ${participant.score} - 回答順: ${participant.answerOrder}`}
+              />
+            </ListItem>
           ))}
-        </Stack>
+        </List>
       </CardContent>
     </Card>
   );
