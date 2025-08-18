@@ -91,7 +91,7 @@ export default function AdminPanel({ id }: { id: string }) {
               <StateChangeButtons
                 state={sessionState}
                 onClick={(state) => {
-                  adminSocket.emit('state:updated', state);
+                  adminSocket.emit('state:update', state);
                 }}
               />
             </Grid>
@@ -99,7 +99,7 @@ export default function AdminPanel({ id }: { id: string }) {
               <ScreenChangeButtons
                 state={screenState}
                 onClick={(screen) => {
-                  adminSocket.emit('screen:updated', screen);
+                  adminSocket.emit('screen:update', screen);
                 }}
               />
             </Grid>

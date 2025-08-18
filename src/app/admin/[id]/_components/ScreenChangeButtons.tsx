@@ -21,7 +21,7 @@ function ScreenButton({
 }: PropsWithChildren<{
   state: ScreenStates;
   screen: ScreenStates;
-  onClick: (screen: string) => void;
+  onClick: (screen: ScreenStates) => void;
 }>) {
   return (
     <Button
@@ -41,7 +41,7 @@ export default function ScreenChangeButtons({
   onClick,
 }: {
   state: ScreenStates;
-  onClick: (screen: string) => void;
+  onClick: (screen: ScreenStates) => void;
 }) {
   return (
     <Card>

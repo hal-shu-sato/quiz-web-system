@@ -27,7 +27,7 @@ function StateButton({
 }: PropsWithChildren<{
   state: SessionStates;
   stateName: SessionStates;
-  onClick: (state: string) => void;
+  onClick: (state: SessionStates) => void;
 }>) {
   return (
     <Button
@@ -47,7 +47,7 @@ export default function StateChangeButtons({
   onClick,
 }: {
   state: SessionStates;
-  onClick: (state: string) => void;
+  onClick: (state: SessionStates) => void;
 }) {
   return (
     <Card>
