@@ -1,0 +1,3 @@
+[submodule "server"]
+	path = server
+	url = https://github.com/hal-shu-sato/quiz-web-system-server.git
