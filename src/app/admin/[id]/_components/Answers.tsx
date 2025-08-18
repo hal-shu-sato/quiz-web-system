@@ -8,21 +8,22 @@ import {
   Typography,
 } from '@mui/material';
 
+type AnswerBase = {
+  id: string;
+  paticipant_name: string;
+  result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
+};
+type TextAnswer = AnswerBase & {
+  answer_text: string;
+};
+type ImageAnswer = AnswerBase & {
+  answer_image_url: string;
+};
+
 export default function Answers({
   answers,
 }: {
-  answers: (
-    | {
-        id: string;
-        answer_text: string;
-        result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
-      }
-    | {
-        id: string;
-        answer_image_url: string;
-        result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
-      }
-  )[];
+  answers: (TextAnswer | ImageAnswer)[];
 }) {
   return (
     <Card>
