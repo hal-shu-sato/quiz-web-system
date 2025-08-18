@@ -61,13 +61,13 @@ export default function AdminPanel({ id }: { id: string }) {
                   answers={[
                     {
                       id: '1',
-                      paticipant_name: 'Alice',
+                      participant_name: 'Alice',
                       answer_text: 'Sample Answer 1',
                       result: 'correct',
                     },
                     {
                       id: '2',
-                      paticipant_name: 'Bob',
+                      participant_name: 'Bob',
                       answer_image_url: 'https://picsum.photos/640/360',
                       result: 'incorrect',
                     },

@@ -12,7 +12,7 @@ import {
 
 type AnswerBase = {
   id: string;
-  paticipant_name: string;
+  participant_name: string;
   result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
 };
 type TextAnswer = AnswerBase & {
@@ -46,7 +46,7 @@ export default function Answers({
                   </CardContent>
                 )}
                 <CardHeader
-                  title={answer.paticipant_name}
+                  title={answer.participant_name}
                   subheader={`結果: ${answer.result}`}
                 />
                 <CardActions sx={{ justifyContent: 'space-between' }}>
