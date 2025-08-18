@@ -8,3 +8,4 @@ const URL =
     : 'http://localhost:4000';
 
 export const socket = io(URL);
+export const adminSocket = io(URL + '/admin');

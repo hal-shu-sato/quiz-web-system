@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   AppBar,
@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import { adminSocket } from '@/socket';
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
 import {
@@ -33,6 +34,46 @@ export default function AdminPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
   const [screenState, setScreenState] = useState<ScreenStates>('linked');
 
+  useEffect(() => {
+    function onConnect() {
+      console.log('Admin socket connected');
+
+      adminSocket.io.engine.on('upgrade', (transport) => {
+        console.log(`Transport upgraded to: ${transport.name}`);
+      });
+    }
+
+    function onUpdateState(newState: SessionStates) {
+      console.log(`Session state changed to: ${newState}`);
+      setSessionState(newState);
+    }
+
+    function onUpdateScreen(newScreen: ScreenStates) {
+      console.log(`Screen state changed to: ${newScreen}`);
+      setScreenState(newScreen);
+    }
+
+    function onDisconnect() {
+      console.log('Admin socket disconnected');
+    }
+
+    if (adminSocket.connected) {
+      onConnect();
+    }
+
+    adminSocket.on('connect', onConnect);
+    adminSocket.on('state:update', onUpdateState);
+    adminSocket.on('screen:update', onUpdateScreen);
+    adminSocket.on('disconnect', onDisconnect);
+
+    return () => {
+      adminSocket.off('connect', onConnect);
+      adminSocket.off('state:update', onUpdateState);
+      adminSocket.off('screen:update', onUpdateScreen);
+      adminSocket.off('disconnect', onDisconnect);
+    };
+  }, []);
+
   return (
     <>
       <AppBar position="static">
@@ -50,7 +91,7 @@ export default function AdminPanel({ id }: { id: string }) {
               <StateChangeButtons
                 state={sessionState}
                 onClick={(state) => {
-                  setSessionState(state as SessionStates);
+                  adminSocket.emit('state:update', state);
                 }}
               />
             </Grid>
@@ -58,7 +99,7 @@ export default function AdminPanel({ id }: { id: string }) {
               <ScreenChangeButtons
                 state={screenState}
                 onClick={(screen) => {
-                  setScreenState(screen as ScreenStates);
+                  adminSocket.emit('screen:update', screen);
                 }}
               />
             </Grid>
