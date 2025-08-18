@@ -36,7 +36,7 @@ export default function Answers({
               subheader={`結果: ${answer.result}`}
             />
             {'answer_image_url' in answer && (
-              <CardMedia sx={{ height: 140 }} image={answer.answer_image_url} />
+              <CardMedia component="img" image={answer.answer_image_url} />
             )}
             {'answer_text' in answer && (
               <CardContent>
