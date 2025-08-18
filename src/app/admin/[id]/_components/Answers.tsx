@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   Card,
   CardActions,
   CardContent,
@@ -43,13 +44,13 @@ export default function Answers({
               title={answer.paticipant_name}
               subheader={`結果: ${answer.result}`}
             />
-            <CardActions>
-              <Button size="small" color="primary">
-                正解
-              </Button>
-              <Button size="small" color="secondary">
-                不正解
-              </Button>
+            <CardActions sx={{ justifyContent: 'space-between' }}>
+              <ButtonGroup variant="text" size="small">
+                <Button color="primary">正解</Button>
+                <Button color="success">部分点</Button>
+                <Button color="error">不正解</Button>
+                <Button color="secondary">ドボン</Button>
+              </ButtonGroup>
               <Button size="small" color="error">
                 削除
               </Button>
