@@ -1,9 +1,11 @@
 import {
+  Avatar,
   Card,
   CardContent,
   CardHeader,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemText,
 } from '@mui/material';
 
@@ -28,9 +30,12 @@ export default function AnswerOrderList({
         <List>
           {sortedParticipants.map((participant) => (
             <ListItem key={participant.id}>
+              <ListItemAvatar>
+                <Avatar>{participant.answerOrder}</Avatar>
+              </ListItemAvatar>
               <ListItemText
                 primary={participant.name}
-                secondary={`ID: ${participant.id} - スコア: ${participant.score} - 回答順: ${participant.answerOrder}`}
+                secondary={`ID: ${participant.id} - スコア: ${participant.score}`}
               />
             </ListItem>
           ))}
