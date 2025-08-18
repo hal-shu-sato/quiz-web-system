@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   List,
   ListItem,
   ListItemText,
@@ -31,10 +32,13 @@ export default function ParticipantList({
       <CardContent>
         <List>
           {sortedParticipants.map((participant) => (
-            <ListItem key={participant.id}>
+            <ListItem
+              key={participant.id}
+              secondaryAction={<Chip label={participant.score} color="info" />}
+            >
               <ListItemText
                 primary={participant.name}
-                secondary={`ID: ${participant.id} - スコア: ${participant.score}`}
+                secondary={`ID: ${participant.id}`}
               />
             </ListItem>
           ))}
