@@ -62,14 +62,14 @@ export default function AdminPanel({ id }: { id: string }) {
     }
 
     adminSocket.on('connect', onConnect);
-    adminSocket.on('state:update', onUpdateState);
-    adminSocket.on('screen:update', onUpdateScreen);
+    adminSocket.on('state:updated', onUpdateState);
+    adminSocket.on('screen:updated', onUpdateScreen);
     adminSocket.on('disconnect', onDisconnect);
 
     return () => {
       adminSocket.off('connect', onConnect);
-      adminSocket.off('state:update', onUpdateState);
-      adminSocket.off('screen:update', onUpdateScreen);
+      adminSocket.off('state:updated', onUpdateState);
+      adminSocket.off('screen:updated', onUpdateScreen);
       adminSocket.off('disconnect', onDisconnect);
     };
   }, []);
@@ -91,7 +91,7 @@ export default function AdminPanel({ id }: { id: string }) {
               <StateChangeButtons
                 state={sessionState}
                 onClick={(state) => {
-                  adminSocket.emit('state:update', state);
+                  adminSocket.emit('state:updated', state);
                 }}
               />
             </Grid>
@@ -99,7 +99,7 @@ export default function AdminPanel({ id }: { id: string }) {
               <ScreenChangeButtons
                 state={screenState}
                 onClick={(screen) => {
-                  adminSocket.emit('screen:update', screen);
+                  adminSocket.emit('screen:updated', screen);
                 }}
               />
             </Grid>

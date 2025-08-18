@@ -41,14 +41,14 @@ export default function AdminScreen({ id }: { id: string }) {
     }
 
     adminSocket.on('connect', onConnect);
-    adminSocket.on('state:update', onUpdateState);
-    adminSocket.on('screen:update', onUpdateScreen);
+    adminSocket.on('state:updated', onUpdateState);
+    adminSocket.on('screen:updated', onUpdateScreen);
     adminSocket.on('disconnect', onDisconnect);
 
     return () => {
       adminSocket.off('connect', onConnect);
-      adminSocket.off('state:update', onUpdateState);
-      adminSocket.off('screen:update', onUpdateScreen);
+      adminSocket.off('state:updated', onUpdateState);
+      adminSocket.off('screen:updated', onUpdateScreen);
       adminSocket.off('disconnect', onDisconnect);
     };
   }, []);
