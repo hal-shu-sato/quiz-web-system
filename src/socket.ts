@@ -11,7 +11,7 @@ import type {
 
 const URL =
   process.env.NODE_ENV === 'production'
-    ? process.env.SOCKET_SERVER_URL
+    ? process.env.NEXT_PUBLIC_SOCKET_SERVER_URL
     : 'http://localhost:4000';
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
