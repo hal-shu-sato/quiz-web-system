@@ -26,6 +26,11 @@ import {
 
 import type { ScreenStates } from './_components/ScreenChangeButtons';
 import type { SessionStates } from './_components/StateChangeButtons';
+import type {
+  AnswerWithJudge,
+  Participant,
+  Question,
+} from '@/../server/src/sockets/events';
 
 const leftPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 8 };
 const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };
@@ -33,6 +38,66 @@ const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };
 export default function AdminPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
   const [screenState, setScreenState] = useState<ScreenStates>('linked');
+  const [participants, setParticipants] = useState<Participant[]>([
+    {
+      id: '1',
+      name: 'Alice',
+      score: 100,
+      is_dobon: false,
+      answer_order: 1,
+    },
+    {
+      id: '2',
+      name: 'Bob',
+      score: 80,
+      is_dobon: false,
+      answer_order: 2,
+    },
+  ]);
+  const [question, setQuestion] = useState<Question>({
+    id: 'sample1',
+    title: 'サンプル問題',
+    max_points: 0,
+    type: 'normal',
+  });
+  const [answers, setAnswers] = useState<AnswerWithJudge[]>([
+    {
+      id: '1',
+      participant_id: '1',
+      participant_name: 'Alice',
+      question_id: 'sample1',
+      answer_text: 'Sample Answer 1',
+      judgment_result: 'correct',
+      awarded_points: 10,
+    },
+    {
+      id: '2',
+      participant_id: '2',
+      participant_name: 'Bob',
+      question_id: 'sample1',
+      answer_image_url: 'https://picsum.photos/640/360',
+      judgment_result: 'incorrect',
+      awarded_points: 0,
+    },
+    {
+      id: '3',
+      participant_id: '3',
+      participant_name: 'Charlie',
+      question_id: 'sample1',
+      answer_text: 'Sample Answer 2',
+      judgment_result: 'partial',
+      awarded_points: 5,
+    },
+    {
+      id: '4',
+      participant_id: '4',
+      participant_name: 'David',
+      question_id: 'sample1',
+      answer_image_url: 'https://picsum.photos/640/360',
+      judgment_result: 'dobon',
+      awarded_points: 0,
+    },
+  ]);
 
   useEffect(() => {
     function onConnect() {
@@ -53,6 +118,21 @@ export default function AdminPanel({ id }: { id: string }) {
       setScreenState(newScreen);
     }
 
+    function onUpdateParticipants(participants: Participant[]) {
+      console.log(`Participants updated: ${participants.length}`);
+      setParticipants(participants);
+    }
+
+    function onUpdateQuestion(question: Question) {
+      console.log(`Question updated: ${question.title}`);
+      setQuestion(question);
+    }
+
+    function onUpdateAnswers(answers: AnswerWithJudge[]) {
+      console.log(`Answers updated: ${answers.length}`);
+      setAnswers(answers);
+    }
+
     function onDisconnect() {
       console.log('Admin socket disconnected');
     }
@@ -64,12 +144,18 @@ export default function AdminPanel({ id }: { id: string }) {
     adminSocket.on('connect', onConnect);
     adminSocket.on('state:updated', onUpdateState);
     adminSocket.on('screen:updated', onUpdateScreen);
+    adminSocket.on('participants:updated', onUpdateParticipants);
+    adminSocket.on('question:updated', onUpdateQuestion);
+    adminSocket.on('answers:updated', onUpdateAnswers);
     adminSocket.on('disconnect', onDisconnect);
 
     return () => {
       adminSocket.off('connect', onConnect);
       adminSocket.off('state:updated', onUpdateState);
       adminSocket.off('screen:updated', onUpdateScreen);
+      adminSocket.off('participants:updated', onUpdateParticipants);
+      adminSocket.off('question:updated', onUpdateQuestion);
+      adminSocket.off('answers:updated', onUpdateAnswers);
       adminSocket.off('disconnect', onDisconnect);
     };
   }, []);
@@ -107,51 +193,17 @@ export default function AdminPanel({ id }: { id: string }) {
           <Grid container spacing={2}>
             <Grid size={leftPanelSize}>
               <Stack spacing={2}>
-                <ProblemCard title="Sample Problem" point={10} />
-                <Answers
-                  answers={[
-                    {
-                      id: '1',
-                      participant_name: 'Alice',
-                      answer_text: 'Sample Answer 1',
-                      result: 'correct',
-                    },
-                    {
-                      id: '2',
-                      participant_name: 'Bob',
-                      answer_image_url: 'https://picsum.photos/640/360',
-                      result: 'incorrect',
-                    },
-                    {
-                      id: '3',
-                      participant_name: 'Charlie',
-                      answer_text: 'Sample Answer 2',
-                      result: 'partial',
-                    },
-                    {
-                      id: '4',
-                      participant_name: 'David',
-                      answer_image_url: 'https://picsum.photos/640/360',
-                      result: 'dobon',
-                    },
-                  ]}
+                <ProblemCard
+                  title={question.title}
+                  point={question.max_points}
                 />
+                <Answers answers={answers} />
               </Stack>
             </Grid>
             <Grid size={rightPanelSize}>
               <Stack spacing={2}>
-                <ParticipantList
-                  participants={[
-                    { id: '1', name: 'Alice', score: 100 },
-                    { id: '2', name: 'Bob', score: 80 },
-                  ]}
-                />
-                <AnswerOrderList
-                  participants={[
-                    { id: '1', name: 'Alice', score: 100, answerOrder: 1 },
-                    { id: '2', name: 'Bob', score: 80, answerOrder: 2 },
-                  ]}
-                />
+                <ParticipantList participants={participants} />
+                <AnswerOrderList participants={participants} />
               </Stack>
             </Grid>
           </Grid>

@@ -10,10 +10,30 @@ import {
   Typography,
 } from '@mui/material';
 
+function getResult(
+  result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon',
+) {
+  switch (result) {
+    case 'pending':
+      return '判定中';
+    case 'correct':
+      return '正解';
+    case 'partial':
+      return '部分点';
+    case 'incorrect':
+      return '不正解';
+    case 'dobon':
+      return 'ドボン';
+    default:
+      return '不明';
+  }
+}
+
 type AnswerBase = {
   id: string;
   participant_name: string;
-  result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
+  judgment_result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
+  awarded_points: number;
 };
 type TextAnswer = AnswerBase & {
   answer_text: string;
@@ -47,7 +67,7 @@ export default function Answers({
                 )}
                 <CardHeader
                   title={answer.participant_name}
-                  subheader={`結果: ${answer.result}`}
+                  subheader={`結果: ${getResult(answer.judgment_result)} | 獲得点数: ${answer.awarded_points}`}
                 />
                 <CardActions sx={{ justifyContent: 'space-between' }}>
                   <ButtonGroup variant="text" size="small">

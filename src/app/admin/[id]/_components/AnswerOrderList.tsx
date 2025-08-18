@@ -16,11 +16,11 @@ export default function AnswerOrderList({
     id: string;
     name: string;
     score: number;
-    answerOrder: number;
+    answer_order: number;
   }[];
 }) {
   const sortedParticipants = [...participants].sort(
-    (a, b) => a.answerOrder - b.answerOrder,
+    (a, b) => a.answer_order - b.answer_order,
   );
 
   return (
@@ -31,7 +31,7 @@ export default function AnswerOrderList({
           {sortedParticipants.map((participant) => (
             <ListItem key={participant.id}>
               <ListItemAvatar>
-                <Avatar>{participant.answerOrder}</Avatar>
+                <Avatar>{participant.answer_order}</Avatar>
               </ListItemAvatar>
               <ListItemText
                 primary={participant.name}
