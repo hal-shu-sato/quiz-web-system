@@ -39,7 +39,7 @@ export default function AdminPanel({ id }: { id: string }) {
           <Typography variant="subtitle1">ID: {id}</Typography>
         </Toolbar>
       </AppBar>
-      <Container style={{ marginTop: '20px' }}>
+      <Container sx={{ my: 2 }}>
         <Stack spacing={2}>
           <Grid container spacing={2}>
             <Grid size={leftPanelSize}>
