@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   Typography,
@@ -19,10 +20,10 @@ export default function ProblemCard({
       <CardContent>
         <Typography variant="h6">{title}</Typography>
         <Typography variant="body1">ポイント: {point}</Typography>
-        <Button variant="contained" style={{ marginTop: '10px' }}>
-          問題を編集
-        </Button>
       </CardContent>
+      <CardActions>
+        <Button>編集</Button>
+      </CardActions>
     </Card>
   );
 }
