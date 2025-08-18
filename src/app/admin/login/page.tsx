@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 
-import { Button, Container, Paper, Stack, TextField } from '@mui/material';
+import {
+  Button,
+  Container,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 export default function AdminLogin() {
   const [sessionCode, setSessionCode] = useState('');
@@ -11,9 +18,11 @@ export default function AdminLogin() {
 
   return (
     <Container maxWidth="xs">
-      <Paper elevation={3} style={{ padding: '20px', marginTop: '20px' }}>
+      <Paper elevation={3} sx={{ my: 3, p: 3 }}>
         <Stack spacing={2}>
-          <h1>運営ログイン</h1>
+          <Typography variant="h4" component="h1">
+            運営ログイン
+          </Typography>
           <TextField
             label="セッションコード"
             fullWidth
