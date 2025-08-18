@@ -22,7 +22,7 @@ export default function ProblemCard({
         <Typography variant="body1">ポイント: {point}</Typography>
       </CardContent>
       <CardActions>
-        <Button>編集</Button>
+        <Button size="small">編集</Button>
       </CardActions>
     </Card>
   );
