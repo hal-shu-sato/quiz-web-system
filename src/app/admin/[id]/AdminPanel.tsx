@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import {
   AppBar,
   Container,
@@ -21,10 +23,16 @@ import {
   StateChangeButtons,
 } from './_components';
 
+import type { ScreenStates } from './_components/ScreenChangeButtons';
+import type { SessionStates } from './_components/StateChangeButtons';
+
 const leftPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 8 };
 const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };
 
 export default function AdminPanel({ id }: { id: string }) {
+  const [sessionState, setSessionState] = useState<SessionStates>('wait');
+  const [screenState, setScreenState] = useState<ScreenStates>('linked');
+
   return (
     <>
       <AppBar position="static">
@@ -40,15 +48,17 @@ export default function AdminPanel({ id }: { id: string }) {
           <Grid container spacing={2}>
             <Grid size={leftPanelSize}>
               <StateChangeButtons
+                state={sessionState}
                 onClick={(state) => {
-                  console.log(`State changed to: ${state}`);
+                  setSessionState(state as SessionStates);
                 }}
               />
             </Grid>
             <Grid size={rightPanelSize}>
               <ScreenChangeButtons
+                state={screenState}
                 onClick={(screen) => {
-                  console.log(`Screen changed to: ${screen}`);
+                  setScreenState(screen as ScreenStates);
                 }}
               />
             </Grid>

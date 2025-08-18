@@ -1,3 +1,5 @@
+import type { PropsWithChildren } from 'react';
+
 import {
   Button,
   Card,
@@ -9,11 +11,42 @@ import {
 
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
+export type SessionStates =
+  | 'wait'
+  | 'question'
+  | 'answer'
+  | 'judge'
+  | 'answer_check'
+  | 'judge_check';
+
+function StateButton({
+  children,
+  state,
+  stateName,
+  onClick,
+}: PropsWithChildren<{
+  state: SessionStates;
+  stateName: SessionStates;
+  onClick: (state: string) => void;
+}>) {
+  return (
+    <Button
+      fullWidth
+      variant={state === stateName ? 'contained' : 'text'}
+      onClick={() => onClick(stateName)}
+    >
+      {children}
+    </Button>
+  );
+}
+
 const gridSize: ResponsiveStyleValue<GridSize> = { xs: 4, lg: 'auto' };
 
 export default function StateChangeButtons({
+  state,
   onClick,
 }: {
+  state: SessionStates;
   onClick: (state: string) => void;
 }) {
   return (
@@ -22,34 +55,42 @@ export default function StateChangeButtons({
       <CardActions sx={{ display: 'inherit' }}>
         <Grid container spacing={2}>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('wait')}>
+            <StateButton state={state} stateName="wait" onClick={onClick}>
               待機
-            </Button>
+            </StateButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('question')}>
+            <StateButton state={state} stateName="question" onClick={onClick}>
               出題
-            </Button>
+            </StateButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('answer')}>
+            <StateButton state={state} stateName="answer" onClick={onClick}>
               回答
-            </Button>
+            </StateButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('judge')}>
+            <StateButton state={state} stateName="judge" onClick={onClick}>
               回答締切
-            </Button>
+            </StateButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('answer_check')}>
+            <StateButton
+              state={state}
+              stateName="answer_check"
+              onClick={onClick}
+            >
               アンサーチェック
-            </Button>
+            </StateButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('judge_check')}>
+            <StateButton
+              state={state}
+              stateName="judge_check"
+              onClick={onClick}
+            >
               正解はこちら
-            </Button>
+            </StateButton>
           </Grid>
         </Grid>
       </CardActions>

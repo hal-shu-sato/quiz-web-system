@@ -1,3 +1,5 @@
+import type { PropsWithChildren } from 'react';
+
 import {
   Button,
   Card,
@@ -9,11 +11,36 @@ import {
 
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
+export type ScreenStates = 'linked' | 'answers' | 'judges' | 'scores';
+
+function ScreenButton({
+  children,
+  state,
+  screen,
+  onClick,
+}: PropsWithChildren<{
+  state: ScreenStates;
+  screen: ScreenStates;
+  onClick: (screen: string) => void;
+}>) {
+  return (
+    <Button
+      fullWidth
+      variant={state === screen ? 'contained' : 'text'}
+      onClick={() => onClick(screen)}
+    >
+      {children}
+    </Button>
+  );
+}
+
 const gridSize: ResponsiveStyleValue<GridSize> = { xs: 6, lg: 'auto' };
 
 export default function ScreenChangeButtons({
+  state,
   onClick,
 }: {
+  state: ScreenStates;
   onClick: (screen: string) => void;
 }) {
   return (
@@ -22,24 +49,24 @@ export default function ScreenChangeButtons({
       <CardActions sx={{ display: 'inherit' }}>
         <Grid container spacing={2}>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('linked')}>
+            <ScreenButton state={state} screen="linked" onClick={onClick}>
               連動
-            </Button>
+            </ScreenButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('answers')}>
+            <ScreenButton state={state} screen="answers" onClick={onClick}>
               回答表示
-            </Button>
+            </ScreenButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('judges')}>
+            <ScreenButton state={state} screen="judges" onClick={onClick}>
               判定表示
-            </Button>
+            </ScreenButton>
           </Grid>
           <Grid size={gridSize}>
-            <Button fullWidth onClick={() => onClick('scores')}>
+            <ScreenButton state={state} screen="scores" onClick={onClick}>
               スコア
-            </Button>
+            </ScreenButton>
           </Grid>
         </Grid>
       </CardActions>
