@@ -1,45 +1,47 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { socket } from '../socket';
+import {
+  Button,
+  Container,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 export default function Home() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [transport, setTransport] = useState('N/A');
-
-  useEffect(() => {
-    if (socket.connected) {
-      onConnect();
-    }
-
-    function onConnect() {
-      setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
-
-      socket.io.engine.on('upgrade', (transport) => {
-        setTransport(transport.name);
-      });
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-      setTransport('N/A');
-    }
-
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-    };
-  }, []);
+  const [sessionCode, setSessionCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   return (
-    <div>
-      <p>Status: {isConnected ? 'connected' : 'disconnected'}</p>
-      <p>Transport: {transport}</p>
-    </div>
+    <Container maxWidth="xs" sx={{ my: 3 }}>
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <Stack spacing={2}>
+          <Typography variant="h4" component="h1">
+            参加
+          </Typography>
+          <TextField
+            label="セッションコード"
+            fullWidth
+            autoFocus
+            required
+            value={sessionCode}
+            onChange={(e) => setSessionCode(e.target.value)}
+            error={!!error}
+            helperText={error}
+          />
+          <Button
+            variant="contained"
+            fullWidth
+            disabled={loading || !sessionCode}
+          >
+            {loading ? '参加中...' : '参加'}
+          </Button>
+        </Stack>
+      </Paper>
+    </Container>
   );
 }
