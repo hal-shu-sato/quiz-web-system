@@ -17,8 +17,8 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
 
   return (
-    <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ my: 3, p: 3 }}>
+    <Container maxWidth="xs" sx={{ my: 3 }}>
+      <Paper elevation={3} sx={{ p: 3 }}>
         <Stack spacing={2}>
           <Typography variant="h4" component="h1">
             運営ログイン
