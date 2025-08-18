@@ -13,8 +13,8 @@ import {
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
 import {
-  Answer,
   AnswerOrderList,
+  Answers,
   ParticipantList,
   ProblemCard,
   ScreenChangeButtons,
@@ -57,7 +57,7 @@ export default function AdminPanel({ id }: { id: string }) {
             <Grid size={leftPanelSize}>
               <Stack spacing={2}>
                 <ProblemCard title="Sample Problem" point={10} />
-                <Answer
+                <Answers
                   answers={[
                     {
                       id: '1',

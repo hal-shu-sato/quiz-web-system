@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 
-export default function Answer({
+export default function Answers({
   answers,
 }: {
   answers: (
