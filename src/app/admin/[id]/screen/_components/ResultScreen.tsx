@@ -84,16 +84,18 @@ function AnswerCanvas({
 
 export default function ResultScreen({
   results,
+  showAnswers = false,
   showJudges = false,
 }: {
   results: {
     id: string;
     participant_name: string;
-    answer_text: string;
-    answer_image_url: string;
+    answer_text?: string;
+    answer_image_url?: string;
     judgment_result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
     awarded_points: number;
   }[];
+  showAnswers?: boolean;
   showJudges?: boolean;
 }) {
   return (
@@ -111,12 +113,29 @@ export default function ResultScreen({
             return (
               <Grid size={{ sm: 4 }} key={result.id}>
                 <ImageListItem>
-                  <AnswerCanvas
-                    imageUrl={result.answer_image_url}
-                    judgmentResult={
-                      showJudges ? result.judgment_result : 'pending'
-                    }
-                  />
+                  {showAnswers || showJudges ? (
+                    <AnswerCanvas
+                      imageUrl={result.answer_image_url || ''}
+                      judgmentResult={
+                        showJudges ? result.judgment_result : 'pending'
+                      }
+                    />
+                  ) : (
+                    <canvas
+                      width={640}
+                      height={360}
+                      style={{
+                        objectFit: 'cover',
+                        width: '100%',
+                        height: '100%',
+                        display: 'block',
+                        backgroundColor:
+                          !result.answer_text && !result.answer_image_url
+                            ? '#0000bf'
+                            : '#0000ff',
+                      }}
+                    />
+                  )}
                   <ImageListItemBar
                     title={result.participant_name}
                     subtitle={showJudges && `${result.awarded_points}ポイント`}
