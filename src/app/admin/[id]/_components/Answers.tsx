@@ -31,10 +31,6 @@ export default function Answers({
       <CardContent>
         {answers.map((answer) => (
           <Card key={answer.id} sx={{ mb: 2 }}>
-            <CardHeader
-              title={`回答ID: ${answer.id}`}
-              subheader={`結果: ${answer.result}`}
-            />
             {'answer_image_url' in answer && (
               <CardMedia component="img" image={answer.answer_image_url} />
             )}
@@ -43,6 +39,10 @@ export default function Answers({
                 <Typography variant="body1">{answer.answer_text}</Typography>
               </CardContent>
             )}
+            <CardHeader
+              title={answer.paticipant_name}
+              subheader={`結果: ${answer.result}`}
+            />
             <CardActions>
               <Button size="small" color="primary">
                 正解
