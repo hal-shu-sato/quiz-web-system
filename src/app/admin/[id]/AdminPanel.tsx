@@ -66,7 +66,7 @@ export default function AdminPanel({ id }: { id: string }) {
                     },
                     {
                       id: '2',
-                      answer_image_url: 'https://picsum.photos/300',
+                      answer_image_url: 'https://picsum.photos/640/360',
                       result: 'incorrect',
                     },
                   ]}
