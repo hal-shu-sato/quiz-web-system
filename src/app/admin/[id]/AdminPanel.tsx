@@ -71,6 +71,18 @@ export default function AdminPanel({ id }: { id: string }) {
                       answer_image_url: 'https://picsum.photos/640/360',
                       result: 'incorrect',
                     },
+                    {
+                      id: '3',
+                      participant_name: 'Charlie',
+                      answer_text: 'Sample Answer 2',
+                      result: 'partial',
+                    },
+                    {
+                      id: '4',
+                      participant_name: 'David',
+                      answer_image_url: 'https://picsum.photos/640/360',
+                      result: 'dobon',
+                    },
                   ]}
                 />
               </Stack>
