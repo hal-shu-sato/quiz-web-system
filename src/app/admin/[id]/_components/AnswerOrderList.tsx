@@ -17,12 +17,16 @@ export default function AnswerOrderList({
     answerOrder: number;
   }[];
 }) {
+  const sortedParticipants = [...participants].sort(
+    (a, b) => a.answerOrder - b.answerOrder,
+  );
+
   return (
     <Card>
       <CardHeader title="回答順一覧" />
       <CardContent>
         <List>
-          {participants.map((participant) => (
+          {sortedParticipants.map((participant) => (
             <ListItem key={participant.id}>
               <ListItemText
                 primary={participant.name}
