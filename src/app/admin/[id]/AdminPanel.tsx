@@ -2,7 +2,6 @@
 
 import {
   AppBar,
-  type Breakpoint,
   Container,
   Grid,
   type GridSize,
@@ -10,6 +9,8 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+
+import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
 import {
   Answer,
@@ -20,11 +21,6 @@ import {
   StateChangeButtons,
 } from './_components';
 
-// from '@mui/material/esm/Grid/Grid.d.ts'
-type ResponsiveStyleValue<T> =
-  | T
-  | Array<T | null>
-  | { [key in Breakpoint]?: T | null };
 const leftPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 8 };
 const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };
 
