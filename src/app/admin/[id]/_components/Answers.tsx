@@ -6,6 +6,7 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Grid,
   Typography,
 } from '@mui/material';
 
@@ -30,33 +31,39 @@ export default function Answers({
     <Card>
       <CardHeader title="回答一覧" />
       <CardContent>
-        {answers.map((answer) => (
-          <Card key={answer.id} sx={{ mb: 2 }}>
-            {'answer_image_url' in answer && (
-              <CardMedia component="img" image={answer.answer_image_url} />
-            )}
-            {'answer_text' in answer && (
-              <CardContent>
-                <Typography variant="body1">{answer.answer_text}</Typography>
-              </CardContent>
-            )}
-            <CardHeader
-              title={answer.paticipant_name}
-              subheader={`結果: ${answer.result}`}
-            />
-            <CardActions sx={{ justifyContent: 'space-between' }}>
-              <ButtonGroup variant="text" size="small">
-                <Button color="primary">正解</Button>
-                <Button color="success">部分点</Button>
-                <Button color="error">不正解</Button>
-                <Button color="secondary">ドボン</Button>
-              </ButtonGroup>
-              <Button size="small" color="error">
-                削除
-              </Button>
-            </CardActions>
-          </Card>
-        ))}
+        <Grid container spacing={2}>
+          {answers.map((answer) => (
+            <Grid size={{ xs: 12, sm: 6 }} key={answer.id}>
+              <Card>
+                {'answer_image_url' in answer && (
+                  <CardMedia component="img" image={answer.answer_image_url} />
+                )}
+                {'answer_text' in answer && (
+                  <CardContent>
+                    <Typography variant="body1">
+                      {answer.answer_text}
+                    </Typography>
+                  </CardContent>
+                )}
+                <CardHeader
+                  title={answer.paticipant_name}
+                  subheader={`結果: ${answer.result}`}
+                />
+                <CardActions sx={{ justifyContent: 'space-between' }}>
+                  <ButtonGroup variant="text" size="small">
+                    <Button color="primary">正解</Button>
+                    <Button color="success">部分点</Button>
+                    <Button color="error">不正解</Button>
+                    <Button color="secondary">ドボン</Button>
+                  </ButtonGroup>
+                  <Button size="small" color="error">
+                    削除
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </CardContent>
     </Card>
   );
