@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 
 const eslintConfig = tseslint.config(
   {
-    ignores: ['**/node_modules/', '**/server/'],
+    ignores: ['**/.next/', '**/node_modules/', '**/server/'],
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
