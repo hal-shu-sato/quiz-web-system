@@ -1,13 +1,20 @@
+import e from 'express';
 import type { Question } from '../generated/prisma';
 import prisma from '../lib/prisma';
 
+export type QuestionCreationParams = Pick<
+  Question,
+  'sessionId' | 'title' | 'maxPoints'
+>;
+export type QuestionUpdateParams = Partial<Question>;
+
 export class QuestionService {
-  public create(sessionId: string, title: string, maxPoints: number) {
+  public create(data: QuestionCreationParams) {
     return prisma.question.create({
       data: {
-        sessionId,
-        title,
-        maxPoints,
+        sessionId: data.sessionId,
+        title: data.title,
+        maxPoints: data.maxPoints,
       },
     });
   }
@@ -24,7 +31,7 @@ export class QuestionService {
     });
   }
 
-  public update(id: string, data: Partial<Question>) {
+  public update(id: string, data: QuestionUpdateParams) {
     return prisma.question.update({
       where: { id },
       data,

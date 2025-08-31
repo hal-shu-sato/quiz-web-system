@@ -5,6 +5,7 @@ export type SessionCreationParams = Pick<
   Session,
   'title' | 'code' | 'startAt' | 'endAt'
 >;
+export type SessionUpdateParams = Partial<Session>;
 
 export class SessionService {
   public create(data: SessionCreationParams) {
@@ -30,7 +31,7 @@ export class SessionService {
     });
   }
 
-  public update(id: string, data: Partial<Session>) {
+  public update(id: string, data: SessionUpdateParams) {
     return prisma.session.update({
       where: { id },
       data,

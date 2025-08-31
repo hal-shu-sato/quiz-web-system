@@ -5,6 +5,7 @@ export type ParticipantCreationParams = Pick<
   Participant,
   'name' | 'sessionId' | 'reconnectionCode'
 >;
+export type ParticipantUpdateParams = Partial<Participant>;
 
 export class ParticipantService {
   public create(data: ParticipantCreationParams) {
@@ -42,7 +43,7 @@ export class ParticipantService {
     });
   }
 
-  public update(id: string, data: Partial<Participant>) {
+  public update(id: string, data: ParticipantUpdateParams) {
     return prisma.participant.update({
       where: { id },
       data,

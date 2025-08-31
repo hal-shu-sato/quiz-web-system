@@ -1,10 +1,30 @@
 import type { Answer } from '../generated/prisma';
 import prisma from '../lib/prisma';
 
+export type AnswerCreationParams = Pick<
+  Answer,
+  | 'questionId'
+  | 'participantId'
+  | 'answerType'
+  | 'answerText'
+  | 'answerImagePath'
+  | 'awardedPoints'
+  | 'judgmentResult'
+>;
+export type AnswerUpdateParams = Partial<Answer>;
+
 export class AnswerService {
-  public create(data: Omit<Answer, 'id' | 'timestamp'>) {
+  public create(data: AnswerCreationParams) {
     return prisma.answer.create({
-      data,
+      data: {
+        questionId: data.questionId,
+        participantId: data.participantId,
+        answerType: data.answerType,
+        answerText: data.answerText,
+        answerImagePath: data.answerImagePath,
+        awardedPoints: data.awardedPoints,
+        judgmentResult: data.judgmentResult,
+      },
     });
   }
 
@@ -26,7 +46,7 @@ export class AnswerService {
     });
   }
 
-  public update(id: string, data: Partial<Answer>) {
+  public update(id: string, data: AnswerUpdateParams) {
     return prisma.answer.update({
       where: { id },
       data,
