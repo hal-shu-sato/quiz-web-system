@@ -139,4 +139,4 @@ dist
 /db
 /files
 /src/build
-/src/generated/prisma
+/src/generated
