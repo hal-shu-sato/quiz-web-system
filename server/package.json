@@ -2,7 +2,6 @@
   "name": "quiz-web-system-server",
   "version": "1.0.0",
   "private": true,
-  "repository": "https://github.com/hal-shu-sato/quiz-web-system-server.git",
   "license": "UNLICENSED",
   "author": "ato lash <28973861+hal-shu-sato@users.noreply.github.com>",
   "main": "dist/index.js",
