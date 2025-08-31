@@ -9,7 +9,22 @@
     "server"
   ],
   "scripts": {
-    "prepare": "husky"
+    "build": "npm-run-all2 build:*",
+    "build:client": "yarn workspace quiz-web-system-client build",
+    "build:server": "yarn workspace quiz-web-system-server build",
+    "dev": "npm-run-all2 -p dev:*",
+    "dev:client": "yarn workspace quiz-web-system-client dev",
+    "dev:server": "yarn workspace quiz-web-system-server dev",
+    "fix": "npm-run-all2 fix:*",
+    "fix:eslint": "eslint --fix",
+    "fix:prettier": "prettier --write .",
+    "lint": "npm-run-all2 lint:*",
+    "lint:eslint": "eslint",
+    "lint:prettier": "prettier --check .",
+    "prepare": "husky",
+    "start": "npm-run-all2 -p start:*",
+    "start:client": "yarn workspace quiz-web-system-client start",
+    "start:server": "yarn workspace quiz-web-system-server start"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
