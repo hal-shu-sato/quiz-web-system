@@ -1,10 +1,11 @@
-import { Body, Controller, Post, Response, Route } from 'tsoa';
+import { Body, Controller, Post, Request, Response, Route } from 'tsoa';
 
 import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 
 import type { Participant, Session } from '../../generated/prisma';
 import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
+import type { Request as ExRequest } from 'express';
 
 type LoginParams = {
   code: NonNullable<Session['code']>;
@@ -18,6 +19,7 @@ export class LoginController extends Controller {
   @Post()
   public async login(
     @Body() requestBody: LoginParams,
+    @Request() exReq: ExRequest,
   ): Promise<{ session: Session; participant: Participant }> {
     const session = await new SessionService().getByCode(requestBody.code);
     if (!session) {
@@ -34,6 +36,9 @@ export class LoginController extends Controller {
       this.setStatus(404);
       throw new Error('Participant not found');
     }
+
+    exReq.session.participantId = participant.id;
+    exReq.session.isAdmin = false;
 
     return { session, participant };
   }
