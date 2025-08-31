@@ -4,10 +4,12 @@
   "controllerPathGlobs": ["src/**/*Controller.ts"],
   "spec": {
     "outputDirectory": "build",
-    "specVersion": 3
+    "specFileBaseName": "openapi",
+    "specVersion": 3,
+    "basePath": "api"
   },
   "routes": {
-    "basePath": "/api",
-    "routesDir": "src/build"
+    "routesDir": "src/build",
+    "basePath": "/api"
   }
 }
