@@ -11,6 +11,7 @@ import type { Judge } from '@/../server/src/sockets/events';
 
 export default function QuizPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
+  const [judge, setJudge] = useState<Judge | null>(null);
 
   useEffect(() => {
     function onConnect() {
@@ -28,6 +29,7 @@ export default function QuizPanel({ id }: { id: string }) {
 
     function onUpdateJudge(judge: Judge) {
       console.log(`Judge updated: ${judge.judgment_result}`);
+      setJudge(judge);
     }
 
     function onDisconnect() {
@@ -61,6 +63,7 @@ export default function QuizPanel({ id }: { id: string }) {
         sessionState === 'answer_check' ||
         sessionState === 'judge_check') && (
         <JudgeView
+          judge={judge}
           showAnswer={
             sessionState === 'answer_check' || sessionState === 'judge_check'
           }
