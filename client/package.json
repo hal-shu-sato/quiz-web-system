@@ -6,6 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint:ts": "tsc --incremental false --noEmit",
+    "oa-type": "openapi-typescript ../server/build/openapi.json -o ./src/lib/api/openapi.d.ts",
     "start": "next start"
   },
   "dependencies": {
