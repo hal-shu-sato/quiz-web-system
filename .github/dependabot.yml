@@ -6,7 +6,29 @@
 version: 2
 updates:
   - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/' # Location of package manifests
+    directory: '/client/' # Location of package manifests
+    schedule:
+      interval: 'daily'
+    groups:
+      next:
+        patterns:
+          - '@next/*'
+          - 'next'
+          - 'eslint-config-next'
+      react:
+        patterns:
+          - 'react'
+          - 'react-dom'
+      eslint:
+        patterns:
+          - '@eslint/*'
+          - 'eslint*'
+      prettier:
+        patterns:
+          - 'prettier*'
+
+  - package-ecosystem: 'npm'
+    directory: '/server/'
     schedule:
       interval: 'daily'
     groups:
