@@ -2,7 +2,6 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { FlatCompat } from '@eslint/eslintrc';
-import pluginJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
@@ -13,9 +12,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = tseslint.config(
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     ignores: [
       'node_modules/**',
@@ -29,13 +26,6 @@ const eslintConfig = tseslint.config(
     languageOptions: {
       ecmaVersion: 2017,
       sourceType: 'script',
-
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ['*.mjs'],
-        },
-        tsconfigRootDir: import.meta.dirname,
-      },
     },
 
     rules: {
