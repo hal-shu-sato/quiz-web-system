@@ -1,7 +1,7 @@
 {
   "name": "quiz-web-system",
   "private": true,
-  "repository": "https://github.com/hal-shu-sato/quiz-web-system-client.git",
+  "repository": "https://github.com/hal-shu-sato/quiz-web-system.git",
   "license": "UNLICENSED",
   "author": "ato lash <28973861+hal-shu-sato@users.noreply.github.com>",
   "workspaces": [
