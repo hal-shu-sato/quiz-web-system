@@ -6,6 +6,7 @@ import {
   Path,
   Post,
   Put,
+  Query,
   Response,
   Route,
 } from 'tsoa';
@@ -22,6 +23,13 @@ export class AnswersController extends Controller {
   @Get('{answerId}')
   public async getAnswer(@Path() answerId: string): Promise<Answer | null> {
     return await new AnswerService().getById(answerId);
+  }
+
+  @Get()
+  public async listAnswersByParticipantId(
+    @Query() participantId: string,
+  ): Promise<Answer[]> {
+    return await new AnswerService().listByParticipantId(participantId);
   }
 
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
