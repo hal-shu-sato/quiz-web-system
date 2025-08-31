@@ -7,7 +7,7 @@ import type {
   AdminServerToClientEvents,
   ClientToServerEvents,
   ServerToClientEvents,
-} from '@/../server/src/sockets/events';
+} from '../../server/src/sockets/events';
 
 const URL =
   process.env.NODE_ENV === 'production'

@@ -30,7 +30,7 @@ import type {
   AnswerWithJudge,
   Participant,
   Question,
-} from '@/../server/src/sockets/events';
+} from '../../../../../server/src/sockets/events';
 
 const leftPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 8 };
 const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };

@@ -1,4 +1,4 @@
-import type { Judge } from '@/../server/src/sockets/events';
+import type { Judge } from '../../../../../../server/src/sockets/events';
 
 export default function JudgeView({
   judge,

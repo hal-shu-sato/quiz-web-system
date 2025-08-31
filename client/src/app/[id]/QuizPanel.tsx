@@ -6,8 +6,8 @@ import { socket } from '@/socket';
 
 import { AnswerView, JudgeView, QuestionView, WaitView } from './_components';
 
+import type { Judge } from '../../../../server/src/sockets/events';
 import type { SessionStates } from '../admin/[id]/_components/StateChangeButtons';
-import type { Judge } from '@/../server/src/sockets/events';
 
 export default function QuizPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
