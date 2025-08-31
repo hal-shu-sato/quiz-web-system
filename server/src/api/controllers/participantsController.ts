@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Path, Post, Route, Response } from 'tsoa';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Path,
+  Post,
+  Put,
+  Response,
+  Route,
+} from 'tsoa';
 import type { Participant } from '../../generated/prisma';
 import {
   ParticipantService,
+  ParticipantUpdateParams,
   type ParticipantCreationParams,
 } from '../../services/participant';
 import { ValidateErrorJSON } from '../../types/errors';
@@ -25,5 +36,21 @@ export class ParticipantsController extends Controller {
       sessionId: requestBody.sessionId,
       reconnectionCode: requestBody.reconnectionCode,
     });
+  }
+
+  @Response<ValidateErrorJSON>(422, 'Validation Failed')
+  @Put('{participantId}')
+  public async updateParticipant(
+    @Path() participantId: string,
+    @Body() requestBody: ParticipantUpdateParams,
+  ): Promise<Participant> {
+    return await new ParticipantService().update(participantId, requestBody);
+  }
+
+  @Delete('{participantId}')
+  public async deleteParticipant(
+    @Path() participantId: string,
+  ): Promise<Participant> {
+    return await new ParticipantService().delete(participantId);
   }
 }
