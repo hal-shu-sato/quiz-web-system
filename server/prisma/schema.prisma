@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum State {
+  WAIT
+  QUESTION
+  ANSWER
+  JUDGE
+  ANSWER_CHECK
+  JUDGE_CHECK
+}
+
+model Session {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title             String    @default("")
+  currentQuestionId String?   @unique @db.Uuid
+  state             State     @default(WAIT)
+  code              String?   @unique
+  startAt           DateTime?
+  endAt             DateTime?
+
+  participants    Participant[]
+  questions       Question[]
+  currentQuestion Question?     @relation("CurrentQuestion", fields: [currentQuestionId], references: [id])
+}
+
+model Participant {
+  id               String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId        String  @db.Uuid
+  name             String  @default("")
+  score            Int     @default(0)
+  isDobon          Boolean @default(false)
+  reconnectionCode String?
+
+  session Session  @relation(fields: [sessionId], references: [id])
+  answers Answer[]
+
+  @@unique([sessionId, reconnectionCode])
+  @@index([sessionId])
+}
+
+model Question {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId String @db.Uuid
+  title     String @default("")
+  maxPoints Int    @default(0)
+
+  session          Session  @relation(fields: [sessionId], references: [id])
+  currentInSession Session? @relation("CurrentQuestion")
+  answers          Answer[]
+
+  @@index([sessionId])
+}
+
+enum AnswerType {
+  TEXT
+  IMAGE
+}
+
+enum JudgmentResult {
+  PENDING
+  CORRECT
+  PARTIAL
+  INCORRECT
+  DOBON
+}
+
+model Answer {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  participantId   String         @db.Uuid
+  questionId      String         @db.Uuid
+  timestamp       DateTime       @default(now())
+  answerType      AnswerType     @default(TEXT)
+  answerText      String?
+  answerImagePath String?
+  judgmentResult  JudgmentResult @default(PENDING)
+  awardedPoints   Int            @default(0)
+
+  participant Participant @relation(fields: [participantId], references: [id])
+  question    Question    @relation(fields: [questionId], references: [id])
+
+  @@unique([participantId, questionId])
+  @@index([participantId])
+  @@index([questionId])
+}

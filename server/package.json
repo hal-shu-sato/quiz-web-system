@@ -1,0 +1,58 @@
+{
+  "name": "quiz-web-system-server",
+  "version": "1.0.0",
+  "private": true,
+  "repository": "https://github.com/hal-shu-sato/quiz-web-system-server.git",
+  "license": "UNLICENSED",
+  "author": "ato lash <28973861+hal-shu-sato@users.noreply.github.com>",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "db:deploy": "prisma migrate deploy && prisma generate",
+    "dev": "npm-run-all2 -p watch:*",
+    "fix": "npm-run-all2 fix:*",
+    "fix:eslint": "eslint --fix",
+    "fix:prettier": "prettier --write .",
+    "lint": "npm-run-all2 lint:*",
+    "lint:eslint": "eslint",
+    "lint:prettier": "prettier --check .",
+    "prepare": "husky",
+    "start": "node dist/index.js",
+    "watch:nodemon": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+    "watch:tsc": "tsc -w -p ."
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.15.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1",
+    "tsoa": "^6.6.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "nodemon": "^3.1.10",
+    "npm-run-all2": "^8.0.4",
+    "prettier": "^3.6.2",
+    "prettier-plugin-packagejson": "^2.5.19",
+    "prisma": "^6.15.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.41.0"
+  },
+  "packageManager": "yarn@1.22.22"
+}
