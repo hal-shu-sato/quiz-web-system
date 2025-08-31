@@ -1,3 +1,4 @@
-# Ignore artifacts:
-dist
+client/.next
 node_modules
+server/dist
+server/src/generated
