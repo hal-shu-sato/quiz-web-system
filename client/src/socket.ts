@@ -14,9 +14,11 @@ const URL =
     ? process.env.NEXT_PUBLIC_SOCKET_SERVER_URL
     : 'http://localhost:4000';
 
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
-  io(URL);
+export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+  URL,
+  { withCredentials: true },
+);
 export const adminSocket: Socket<
   AdminServerToClientEvents,
   AdminClientToServerEvents
-> = io(URL + '/admin');
+> = io(URL + '/admin', { withCredentials: true });
