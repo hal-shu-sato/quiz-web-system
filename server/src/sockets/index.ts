@@ -1,6 +1,7 @@
 import { type Namespace, Server } from 'socket.io';
 
 import config from '../config';
+import sessionMiddleware from '../lib/session';
 
 import { registerAdminHandlers, registerMainHandlers } from './handlers';
 
@@ -22,6 +23,8 @@ export function initializeSocket(httpServer: HttpServer) {
       },
     },
   );
+
+  io.engine.use(sessionMiddleware);
 
   io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);

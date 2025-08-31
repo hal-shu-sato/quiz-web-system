@@ -1,16 +1,25 @@
 import cors from 'cors';
 import express from 'express';
+import session from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import { ValidateError } from 'tsoa';
 
 import { RegisterRoutes } from './build/routes';
 import config from './config';
+import sessionMiddleware from './lib/session';
 
 import type {
   Request as ExRequest,
   Response as ExResponse,
   NextFunction,
 } from 'express';
+
+declare module 'express-session' {
+  interface SessionData {
+    participantId: string;
+    isAdmin: boolean;
+  }
+}
 
 const app = express();
 
@@ -27,6 +36,8 @@ app.use('/docs', swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
     swaggerUi.generateHTML(await import('../build/openapi.json')),
   );
 });
+
+app.use(sessionMiddleware);
 
 RegisterRoutes(app);
 
