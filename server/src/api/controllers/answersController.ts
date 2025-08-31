@@ -12,7 +12,7 @@ import {
 import type { Answer } from '../../generated/prisma';
 import {
   AnswerService,
-  AnswerUpdateParams,
+  type AnswerUpdateParams,
   type AnswerCreationParams,
 } from '../../services/answer';
 import { ValidateErrorJSON } from '../../types/errors';
