@@ -3,7 +3,7 @@ import path from 'node:path';
 /** @type {import('lint-staged').SyncGenerateTask} */
 const buildEslintCommand = (filenames) =>
   `eslint --fix ${filenames
-    .map((f) => path.relative(process.cwd(), f))
+    .map((f) => '"' + path.relative(process.cwd(), f) + '"')
     .join(' ')}`;
 const prettierCommand = 'prettier --write';
 
