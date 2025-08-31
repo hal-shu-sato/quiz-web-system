@@ -130,11 +130,11 @@ router.post(
     res,
   ) => {
     const { sessionId, title, maxPoints } = req.body;
-    const question = await new QuestionService().create(
+    const question = await new QuestionService().create({
       sessionId,
       title,
       maxPoints,
-    );
+    });
     res.json(question);
   },
 );
