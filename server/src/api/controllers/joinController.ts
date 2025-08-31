@@ -34,6 +34,7 @@ export class JoinController extends Controller {
       reconnectionCode: requestBody.reconnectionCode,
     });
 
+    this.setStatus(201);
     return { session, participant };
   }
 }
