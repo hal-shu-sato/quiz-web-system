@@ -16,7 +16,7 @@
     "tsoa": "tsoa spec-and-routes",
     "tsoa:routes": "tsoa routes",
     "tsoa:spec": "tsoa spec",
-    "watch:nodemon": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+    "watch:nodemon": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "watch:tsc": "tsc -w -p ."
   },
   "dependencies": {
