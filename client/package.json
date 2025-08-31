@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "yarn oa-type",
     "build": "next build",
     "dev": "next dev",
     "lint:ts": "tsc --incremental false --noEmit",
