@@ -3,14 +3,25 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
+  {
+    ignores: [
+      '**/node_modules/',
+      'client/.next/',
+      'client/build/',
+      'client/out/',
+      'client/next-env.d.ts',
+      'server/dist/',
+      'server/src/generated/',
+    ],
+  },
   pluginJs.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
-  { ignores: ['node_modules/**'] },
   {
     languageOptions: {
       parserOptions: {
-        projectService: { allowDefaultProject: ['*.mjs'] },
-        tsconfigRootDir: import.meta.dirname,
+        projectService: {
+          allowDefaultProject: ['*.mjs', 'client/*.mjs', 'server/*.mjs'],
+        },
       },
     },
   },
