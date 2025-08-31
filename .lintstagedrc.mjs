@@ -2,7 +2,7 @@ import path from 'node:path';
 
 /** @type {import('lint-staged').ConfigFn} */
 const buildEslintCommand = (filenames) =>
-  `next lint --fix --file ${filenames
+  `eslint --fix --file ${filenames
     .map((f) => path.relative(process.cwd(), f))
     .join(' --file ')}`;
 const prettierCommand = 'prettier --write';
@@ -15,5 +15,5 @@ export default {
     prettierCommand,
   ],
   '*.{js,jsx}': [buildEslintCommand, prettierCommand],
-  '*.{json,yml,md,html,css,scss}': prettierCommand,
+  '**/*': prettierCommand + ' --ignore-unknown',
 };

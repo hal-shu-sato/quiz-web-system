@@ -21,13 +21,6 @@
     "watch:nodemon": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
     "watch:tsc": "tsc -w -p ."
   },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "**/*": "prettier --write --ignore-unknown"
-  },
   "dependencies": {
     "@prisma/client": "^6.15.0",
     "cors": "^2.8.5",
