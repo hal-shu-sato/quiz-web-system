@@ -1,3 +1,3 @@
-# typescript-app-template
+# quiz-web-system-server
 
-A typescript-app template
+Quiz hosting web system server
