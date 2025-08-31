@@ -1,18 +1,14 @@
 import { Body, Controller, Post, Response, Route, SuccessResponse } from 'tsoa';
 import type { Participant, Session } from '../../generated/prisma';
-import { SessionService } from '../../services/session';
 import { ParticipantService } from '../../services/participant';
-import { ValidateErrorJSON } from '../../types/errors';
+import { SessionService } from '../../services/session';
+import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
 
 type JoinParams = {
   name: Participant['name'];
   code: NonNullable<Session['code']>;
   reconnectionCode: NonNullable<Participant['reconnectionCode']>;
 };
-interface NotFoundErrorJSON {
-  message: 'Session not found';
-  details: { [name: string]: unknown };
-}
 
 @Route('join')
 export class JoinController extends Controller {
