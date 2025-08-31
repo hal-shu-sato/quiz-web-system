@@ -21,7 +21,7 @@
     "lint": "run-s -c lint:ts lint:eslint lint:prettier",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
-    "lint:ts": "run-s lint:ts:client lint:ts:server",
+    "lint:ts": "run-p lint:ts:client lint:ts:server",
     "lint:ts:client": "yarn workspace quiz-web-system-client lint:ts",
     "lint:ts:server": "yarn workspace quiz-web-system-server lint:ts",
     "prepare": "husky",
