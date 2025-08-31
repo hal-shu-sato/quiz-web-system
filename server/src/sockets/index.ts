@@ -1,13 +1,16 @@
-import type { Server as HttpServer } from 'http';
 import { type Namespace, Server } from 'socket.io';
+
 import config from '../config';
+
+import { registerAdminHandlers, registerMainHandlers } from './handlers';
+
 import type {
   AdminClientToServerEvents,
   AdminServerToClientEvents,
   ClientToServerEvents,
   ServerToClientEvents,
 } from './events';
-import { registerAdminHandlers, registerMainHandlers } from './handlers';
+import type { Server as HttpServer } from 'http';
 
 export function initializeSocket(httpServer: HttpServer) {
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(

@@ -9,13 +9,15 @@ import {
   Response,
   Route,
 } from 'tsoa';
-import type { Participant } from '../../generated/prisma';
+
 import {
   ParticipantService,
-  ParticipantUpdateParams,
   type ParticipantCreationParams,
+  type ParticipantUpdateParams,
 } from '../../services/participant';
-import { ValidateErrorJSON } from '../../types/errors';
+
+import type { Participant } from '../../generated/prisma';
+import type { ValidateErrorJSON } from '../../types/errors';
 
 @Route('participants')
 export class ParticipantsController extends Controller {

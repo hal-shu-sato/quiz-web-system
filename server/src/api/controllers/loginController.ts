@@ -1,8 +1,10 @@
-import { Body, Controller, Post, Response, Route, SuccessResponse } from 'tsoa';
-import type { Participant, Session } from '../../generated/prisma';
-import { SessionService } from '../../services/session';
+import { Body, Controller, Post, Response, Route } from 'tsoa';
+
 import { ParticipantService } from '../../services/participant';
-import { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
+import { SessionService } from '../../services/session';
+
+import type { Participant, Session } from '../../generated/prisma';
+import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
 
 type LoginParams = {
   code: NonNullable<Session['code']>;

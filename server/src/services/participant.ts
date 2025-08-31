@@ -1,5 +1,6 @@
-import type { Participant } from '../generated/prisma';
 import prisma from '../lib/prisma';
+
+import type { Participant } from '../generated/prisma';
 
 export type ParticipantCreationParams = Pick<
   Participant,

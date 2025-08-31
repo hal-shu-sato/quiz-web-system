@@ -1,7 +1,9 @@
 import { Body, Controller, Post, Response, Route, SuccessResponse } from 'tsoa';
-import type { Participant, Session } from '../../generated/prisma';
+
 import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
+
+import type { Participant, Session } from '../../generated/prisma';
 import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
 
 type JoinParams = {

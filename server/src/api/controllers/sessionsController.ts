@@ -9,13 +9,15 @@ import {
   Response,
   Route,
 } from 'tsoa';
-import type { Session } from '../../generated/prisma';
+
 import {
   SessionService,
-  SessionUpdateParams,
   type SessionCreationParams,
+  type SessionUpdateParams,
 } from '../../services/session';
-import { ValidateErrorJSON } from '../../types/errors';
+
+import type { Session } from '../../generated/prisma';
+import type { ValidateErrorJSON } from '../../types/errors';
 
 @Route('sessions')
 export class SessionsController extends Controller {

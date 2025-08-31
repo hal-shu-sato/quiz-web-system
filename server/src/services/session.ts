@@ -1,5 +1,6 @@
-import type { Session } from '../generated/prisma';
 import prisma from '../lib/prisma';
+
+import type { Session } from '../generated/prisma';
 
 export type SessionCreationParams = Pick<
   Session,

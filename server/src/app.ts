@@ -1,13 +1,16 @@
 import cors from 'cors';
-import express, {
+import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { ValidateError } from 'tsoa';
+
+import { RegisterRoutes } from './build/routes';
+import config from './config';
+
+import type {
   Request as ExRequest,
   Response as ExResponse,
   NextFunction,
 } from 'express';
-import swaggerUi from 'swagger-ui-express';
-import { ValidateError } from 'tsoa';
-import { RegisterRoutes } from './build/routes';
-import config from './config';
 
 const app = express();
 

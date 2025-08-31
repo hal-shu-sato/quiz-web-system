@@ -1,10 +1,10 @@
-import type { Namespace, Server, Socket } from 'socket.io';
 import type {
   AdminClientToServerEvents,
   AdminServerToClientEvents,
   ClientToServerEvents,
   ServerToClientEvents,
 } from '../../events';
+import type { Namespace, Server, Socket } from 'socket.io';
 
 export function registerHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents>,

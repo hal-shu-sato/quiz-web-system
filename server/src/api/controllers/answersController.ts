@@ -10,13 +10,15 @@ import {
   Response,
   Route,
 } from 'tsoa';
-import type { Answer } from '../../generated/prisma';
+
 import {
   AnswerService,
   type AnswerUpdateParams,
   type AnswerCreationParams,
 } from '../../services/answer';
-import { ValidateErrorJSON } from '../../types/errors';
+
+import type { Answer } from '../../generated/prisma';
+import type { ValidateErrorJSON } from '../../types/errors';
 
 @Route('answers')
 export class AnswersController extends Controller {
