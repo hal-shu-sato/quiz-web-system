@@ -1,7 +1,6 @@
 import cors from 'cors';
 import express, { Request as ExRequest, Response as ExResponse } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import apiRoutes from './api/routes';
 import { RegisterRoutes } from './build/routes';
 import config from './config';
 
@@ -20,8 +19,6 @@ app.use('/docs', swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
     swaggerUi.generateHTML(await import('../build/openapi.json')),
   );
 });
-
-app.use('/api', apiRoutes);
 
 RegisterRoutes(app);
 
