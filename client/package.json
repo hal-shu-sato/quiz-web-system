@@ -8,7 +8,7 @@
     "fix": "run-s fix:eslint fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier --write .",
-    "lint": "run-s -c lint:ts lint:eslint :prettier",
+    "lint": "run-s -c lint:ts lint:eslint lint:prettier",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
     "lint:ts": "tsc --incremental false --noEmit",
