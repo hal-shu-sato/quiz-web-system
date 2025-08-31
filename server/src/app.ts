@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/files', express.static('files'));
 app.use('/docs', swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
   return res.send(
-    swaggerUi.generateHTML(await import('../build/swagger.json')),
+    swaggerUi.generateHTML(await import('../build/openapi.json')),
   );
 });
 
