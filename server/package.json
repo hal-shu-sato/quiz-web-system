@@ -10,13 +10,6 @@
     "build": "tsc -p .",
     "db:deploy": "prisma migrate deploy && prisma generate",
     "dev": "npm-run-all2 -p watch:*",
-    "fix": "npm-run-all2 fix:*",
-    "fix:eslint": "eslint --fix",
-    "fix:prettier": "prettier --write .",
-    "lint": "npm-run-all2 lint:*",
-    "lint:eslint": "eslint",
-    "lint:prettier": "prettier --check .",
-    "prepare": "husky",
     "start": "node dist/index.js",
     "watch:nodemon": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
     "watch:tsc": "tsc -w -p ."
