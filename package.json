@@ -1,9 +1,9 @@
 {
   "name": "quiz-web-system",
-  "repository": "https://github.com/hal-shu-sato/quiz-web-system-client.git",
-  "author": "ato lash <28973861+hal-shu-sato@users.noreply.github.com>",
-  "license": "UNLICENSED",
   "private": true,
+  "repository": "https://github.com/hal-shu-sato/quiz-web-system-client.git",
+  "license": "UNLICENSED",
+  "author": "ato lash <28973861+hal-shu-sato@users.noreply.github.com>",
   "workspaces": [
     "client",
     "server"
@@ -12,6 +12,11 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.34.0",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
