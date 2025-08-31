@@ -5,6 +5,7 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   pluginJs.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
+  { ignores: ['node_modules/**'] },
   {
     languageOptions: {
       parserOptions: {
