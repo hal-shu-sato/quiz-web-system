@@ -15,7 +15,7 @@ const lintStagedConfig = {
     prettierCommand,
   ],
   '*.{js,jsx}': [buildEslintCommand, prettierCommand],
-  '**/*': prettierCommand + ' --ignore-unknown',
+  '*.{json,yml,md,html,css,scss}': prettierCommand,
 };
 
 export default lintStagedConfig;
