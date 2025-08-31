@@ -21,51 +21,6 @@ const eslintConfig = tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-
-    rules: {
-      'import/order': [
-        'error',
-        {
-          groups: [
-            'builtin',
-            'external',
-            'parent',
-            'sibling',
-            'index',
-            'object',
-            'type',
-          ],
-
-          pathGroups: [
-            {
-              pattern: '{react,react-dom/**,react-router-dom}',
-              group: 'builtin',
-              position: 'before',
-            },
-            {
-              pattern: '@/**',
-              group: 'parent',
-              position: 'before',
-            },
-          ],
-
-          pathGroupsExcludedImportTypes: ['builtin'],
-
-          alphabetize: {
-            order: 'asc',
-          },
-
-          'newlines-between': 'always',
-        },
-      ],
-
-      '@typescript-eslint/consistent-type-imports': [
-        'error',
-        {
-          prefer: 'type-imports',
-        },
-      ],
-    },
   },
   eslintConfigPrettier,
 );
