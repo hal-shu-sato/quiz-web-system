@@ -27,9 +27,8 @@ export class LoginController extends Controller {
       throw new Error('Session not found');
     }
 
-    const { id: sessionId } = session;
     const participant = await new ParticipantService().getByReconnectionCode(
-      sessionId,
+      session.id,
       requestBody.reconnectionCode,
     );
     if (!participant) {
@@ -37,6 +36,7 @@ export class LoginController extends Controller {
       throw new Error('Participant not found');
     }
 
+    exReq.session.sessionId = session.id;
     exReq.session.participantId = participant.id;
     exReq.session.isAdmin = false;
 

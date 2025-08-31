@@ -37,13 +37,13 @@ export class JoinController extends Controller {
       throw new Error('Session not found');
     }
 
-    const { id: sessionId } = session;
     const participant = await new ParticipantService().create({
-      sessionId,
+      sessionId: session.id,
       name: requestBody.name,
       reconnectionCode: requestBody.reconnectionCode,
     });
 
+    exReq.session.sessionId = session.id;
     exReq.session.participantId = participant.id;
     exReq.session.isAdmin = false;
 

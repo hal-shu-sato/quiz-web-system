@@ -16,6 +16,7 @@ import type {
 
 declare module 'express-session' {
   interface SessionData {
+    sessionId: string;
     participantId: string;
     isAdmin: boolean;
   }
