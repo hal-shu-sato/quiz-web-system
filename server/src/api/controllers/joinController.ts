@@ -1,10 +1,19 @@
-import { Body, Controller, Post, Response, Route, SuccessResponse } from 'tsoa';
+import {
+  Body,
+  Controller,
+  Post,
+  Request,
+  Response,
+  Route,
+  SuccessResponse,
+} from 'tsoa';
 
 import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 
 import type { Participant, Session } from '../../generated/prisma';
 import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
+import type { Request as ExRequest } from 'express';
 
 type JoinParams = {
   name: Participant['name'];
@@ -20,6 +29,7 @@ export class JoinController extends Controller {
   @Post()
   public async join(
     @Body() requestBody: JoinParams,
+    @Request() exReq: ExRequest,
   ): Promise<{ session: Session; participant: Participant }> {
     const session = await new SessionService().getByCode(requestBody.code);
     if (!session) {
@@ -33,6 +43,9 @@ export class JoinController extends Controller {
       name: requestBody.name,
       reconnectionCode: requestBody.reconnectionCode,
     });
+
+    exReq.session.participantId = participant.id;
+    exReq.session.isAdmin = false;
 
     this.setStatus(201);
     return { session, participant };
