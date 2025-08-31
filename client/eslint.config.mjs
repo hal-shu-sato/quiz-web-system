@@ -13,12 +13,18 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = tseslint.config(
-  {
-    ignores: ['**/.next/', '**/node_modules/', '**/server/'],
-  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  {
+    ignores: [
+      'node_modules/**',
+      '.next/**',
+      'out/**',
+      'build/**',
+      'next-env.d.ts',
+    ],
+  },
   {
     languageOptions: {
       ecmaVersion: 2017,
