@@ -7,7 +7,7 @@ export type SessionCreationParams = Pick<
 >;
 
 export class SessionService {
-  create(data: SessionCreationParams) {
+  public create(data: SessionCreationParams) {
     return prisma.session.create({
       data: {
         title: data.title,
@@ -18,26 +18,26 @@ export class SessionService {
     });
   }
 
-  getById(id: string) {
+  public getById(id: string) {
     return prisma.session.findUnique({
       where: { id },
     });
   }
 
-  getByCode(code: string) {
+  public getByCode(code: string) {
     return prisma.session.findUnique({
       where: { code },
     });
   }
 
-  update(id: string, data: Partial<Session>) {
+  public update(id: string, data: Partial<Session>) {
     return prisma.session.update({
       where: { id },
       data,
     });
   }
 
-  delete(id: string) {
+  public delete(id: string) {
     return prisma.session.delete({
       where: { id },
     });
