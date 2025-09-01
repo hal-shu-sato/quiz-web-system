@@ -1,6 +1,7 @@
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import Providers from './providers';
 
 import type { Metadata } from 'next';
 
@@ -8,8 +9,6 @@ export const metadata: Metadata = {
   title: 'クイズシステム',
   description: 'クイズシステム',
 };
-
-const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -19,12 +18,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <QueryClientProvider client={queryClient}>
-          <AppRouterCacheProvider>
-            <CssBaseline />
-            {children}
-          </AppRouterCacheProvider>
-        </QueryClientProvider>
+        <AppRouterCacheProvider>
+          <CssBaseline />
+          <Providers>{children}</Providers>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
