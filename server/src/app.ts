@@ -6,6 +6,7 @@ import { ValidateError } from 'tsoa';
 
 import { RegisterRoutes } from './build/routes';
 import config from './config';
+import { ForbiddenError, NotFoundError, UnauthorizedError } from './lib/errors';
 import sessionMiddleware from './lib/session';
 
 import type {
@@ -62,6 +63,31 @@ app.use(function errorHandler(
       details: err?.fields,
     });
   }
+
+  if (err instanceof UnauthorizedError) {
+    console.warn(`Caught Unauthorized Error for ${req.path}:`, err.fields);
+    return res.status(401).json({
+      message: 'Unauthorized',
+      details: err?.fields,
+    });
+  }
+
+  if (err instanceof ForbiddenError) {
+    console.warn(`Caught Forbidden Error for ${req.path}:`, err.fields);
+    return res.status(403).json({
+      message: 'Forbidden',
+      details: err?.fields,
+    });
+  }
+
+  if (err instanceof NotFoundError) {
+    console.warn(`Caught Not Found Error for ${req.path}:`, err.fields);
+    return res.status(404).json({
+      message: 'Not found',
+      details: err?.fields,
+    });
+  }
+
   if (err instanceof Error) {
     return res.status(500).json({
       message: 'Internal Server Error',
