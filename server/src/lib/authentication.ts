@@ -13,8 +13,13 @@ export function expressAuthentication(
       });
     }
 
-    return Promise.reject({});
+    return Promise.reject(new Error('Unauthorized'));
   }
 
-  return Promise.reject({});
+  return Promise.reject(
+    new Error(
+      'No authentication handler configured for security scheme ' +
+        securityName,
+    ),
+  );
 }
