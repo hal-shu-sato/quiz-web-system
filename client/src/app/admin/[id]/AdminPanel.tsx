@@ -108,6 +108,15 @@ export default function AdminPanel({ id }: { id: string }) {
       });
     }
 
+    function onConnectError(err: Error) {
+      console.error('Admin socket connection error:', err);
+
+      if (err.message === 'Session ID unknown') {
+        console.log('Attempting to reconnect with a new session ID...');
+        adminSocket.disconnect().connect();
+      }
+    }
+
     function onUpdateState(newState: SessionStates) {
       console.log(`Session state changed to: ${newState}`);
       setSessionState(newState);
@@ -142,6 +151,7 @@ export default function AdminPanel({ id }: { id: string }) {
     }
 
     adminSocket.on('connect', onConnect);
+    adminSocket.on('connect_error', onConnectError);
     adminSocket.on('state:updated', onUpdateState);
     adminSocket.on('screen:updated', onUpdateScreen);
     adminSocket.on('participants:updated', onUpdateParticipants);
