@@ -11,6 +11,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 import { adminSocket } from '@/socket';
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
@@ -99,6 +100,8 @@ export default function AdminPanel({ id }: { id: string }) {
     },
   ]);
 
+  const router = useRouter();
+
   useEffect(() => {
     function onConnect() {
       console.log('Admin socket connected');
@@ -110,11 +113,7 @@ export default function AdminPanel({ id }: { id: string }) {
 
     function onConnectError(err: Error) {
       console.error('Admin socket connection error:', err);
-
-      if (err.message === 'Session ID unknown') {
-        console.log('Attempting to reconnect with a new session ID...');
-        adminSocket.disconnect().connect();
-      }
+      router.push('/admin/login');
     }
 
     function onUpdateState(newState: SessionStates) {
@@ -168,7 +167,7 @@ export default function AdminPanel({ id }: { id: string }) {
       adminSocket.off('answers:updated', onUpdateAnswers);
       adminSocket.off('disconnect', onDisconnect);
     };
-  }, []);
+  }, [router]);
 
   return (
     <>
