@@ -2,6 +2,8 @@ import { type Namespace, Server } from 'socket.io';
 
 import config from '../config';
 import sessionMiddleware from '../lib/session';
+import { SessionService } from '../services/session';
+import { mapPrismaStateToSocketState } from '../util/enum';
 
 import { registerAdminHandlers, registerMainHandlers } from './handlers';
 
@@ -31,10 +33,28 @@ export function initializeSocket(httpServer: HttpServer) {
 
     registerMainHandlers(io, socket);
 
-    socket.emit('state:updated', 'wait');
-
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
+    });
+
+    const sessionId = socket.request.session.sessionId;
+    if (!sessionId) {
+      console.error('No session ID found in session for socket:', socket.id);
+      socket.disconnect(true);
+      return;
+    }
+
+    socket.join(sessionId);
+
+    const session = new SessionService().getById(sessionId);
+    session.then((s) => {
+      if (!s) {
+        console.error('Session not found for ID:', sessionId);
+        socket.disconnect(true);
+        return;
+      }
+
+      socket.emit('state:updated', mapPrismaStateToSocketState(s.state));
     });
   });
 
