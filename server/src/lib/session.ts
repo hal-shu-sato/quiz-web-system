@@ -4,7 +4,7 @@ import config from '../config';
 
 const sessionMiddleware = session({
   secret: config.sessionSecret,
-  name: 'session',
+  name: 'qsid',
   resave: true,
   saveUninitialized: true,
   cookie: {
