@@ -10,11 +10,39 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
+
+import $api from '@/lib/api';
 
 export default function AdminLogin() {
   const [sessionCode, setSessionCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const router = useRouter();
+
+  const { mutate } = $api.useMutation('post', '/admin/login');
+
+  const handleSubmit = () => {
+    setLoading(true);
+    setError('');
+    mutate(
+      {
+        body: {
+          code: sessionCode,
+        },
+      },
+      {
+        onSuccess: (session) => {
+          router.push(`/admin/${session.id}`);
+        },
+        onError: (error) => {
+          setError(error.message);
+          setLoading(false);
+        },
+      },
+    );
+  };
 
   return (
     <Container maxWidth="xs" sx={{ my: 3 }}>
@@ -37,6 +65,7 @@ export default function AdminLogin() {
             variant="contained"
             fullWidth
             disabled={loading || !sessionCode}
+            onClick={handleSubmit}
           >
             {loading ? 'ログイン中...' : 'ログイン'}
           </Button>
