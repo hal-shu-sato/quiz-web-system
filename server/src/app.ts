@@ -1,6 +1,5 @@
 import cors from 'cors';
 import express from 'express';
-import session from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import { ValidateError } from 'tsoa';
 
