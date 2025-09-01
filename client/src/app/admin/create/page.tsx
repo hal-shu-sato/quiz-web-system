@@ -11,12 +11,37 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
+
+import $api from '@/lib/api';
 
 export default function AdminCreate() {
   const [title, setTitle] = useState('');
   const [sessionCode, setSessionCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const router = useRouter();
+
+  const { mutate } = $api.useMutation('post', '/sessions');
+
+  const handleSubmit = () => {
+    setLoading(true);
+    setError('');
+    mutate(
+      { body: { title, code: sessionCode } },
+      {
+        onSuccess: (data) => {
+          router.push(`/admin/${data.id}`);
+          setLoading(false);
+        },
+        onError: (err) => {
+          setError(err.message || 'セッションの作成に失敗しました');
+          setLoading(false);
+        },
+      },
+    );
+  };
 
   return (
     <Container maxWidth="xs" sx={{ my: 3 }}>
@@ -45,6 +70,7 @@ export default function AdminCreate() {
             variant="contained"
             fullWidth
             disabled={loading || !sessionCode}
+            onClick={handleSubmit}
           >
             {loading ? '作成中...' : '作成'}
           </Button>
