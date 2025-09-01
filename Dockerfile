@@ -8,4 +8,6 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
+WORKDIR /usr/src/app/server
+
 CMD ["sh", "-c", "yarn run db:deploy && yarn run build && yarn run start"]
