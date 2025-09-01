@@ -112,7 +112,7 @@ export default function AdminPanel({ id }: { id: string }) {
     }
 
     function onConnectError(err: Error) {
-      console.error('Admin socket connection error:', err);
+      console.error('Admin socket connection error:', err.message);
       router.push('/admin/login');
     }
 
