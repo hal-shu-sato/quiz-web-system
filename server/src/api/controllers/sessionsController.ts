@@ -41,12 +41,17 @@ export class SessionsController extends Controller {
     @Body() requestBody: SessionCreationParams,
     @Request() exReq: ExRequest,
   ): Promise<Session> {
+    exReq.session.participantId = 'admin';
     exReq.session.isAdmin = true;
 
-    return await new SessionService().create({
+    const session = await new SessionService().create({
       title: requestBody.title,
       code: requestBody.code,
     });
+
+    exReq.session.sessionId = session.id;
+
+    return session;
   }
 
   @Security('session_auth')
