@@ -25,7 +25,7 @@ export class AdminLoginController extends Controller {
   @Response<NotFoundErrorJSON>(404, 'Session Not Found')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Post()
-  public async login(
+  public async adminLogin(
     @Body() requestBody: AdminLoginParams,
     @Request() exReq: ExRequest,
   ): Promise<Session> {
