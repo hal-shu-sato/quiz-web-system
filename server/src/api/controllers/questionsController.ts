@@ -6,8 +6,10 @@ import {
   Path,
   Post,
   Put,
+  Request,
   Response,
   Route,
+  Security,
 } from 'tsoa';
 
 import {
@@ -17,7 +19,12 @@ import {
 } from '../../services/question';
 
 import type { Question } from '../../../generated/prisma';
-import type { ValidateErrorJSON } from '../../types/errors';
+import type {
+  ForbiddenErrorJson,
+  UnauthorizedErrorJSON,
+  ValidateErrorJSON,
+} from '../../types/errors';
+import type { Request as ExRequest } from 'express';
 
 @Route('questions')
 export class QuestionsController extends Controller {
@@ -28,11 +35,25 @@ export class QuestionsController extends Controller {
     return await new QuestionService().getById(questionId);
   }
 
+  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
+  @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
+  @Response<ForbiddenErrorJson>(403, 'Forbidden')
   @Post()
   public async createQuestion(
     @Body() requestBody: QuestionCreationParams,
+    @Request() exReq: ExRequest,
   ): Promise<Question> {
+    if (!exReq.session.participantId) {
+      this.setStatus(401);
+      throw new Error('Unauthorized');
+    }
+
+    if (!exReq.session.isAdmin) {
+      this.setStatus(403);
+      throw new Error('Only admin can create question');
+    }
+
     return await new QuestionService().create({
       sessionId: requestBody.sessionId,
       title: requestBody.title,
@@ -40,17 +61,47 @@ export class QuestionsController extends Controller {
     });
   }
 
+  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
+  @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
+  @Response<ForbiddenErrorJson>(403, 'Forbidden')
   @Put('{questionId}')
   public async updateQuestion(
     @Path() questionId: string,
     @Body() requestBody: QuestionUpdateParams,
+    @Request() exReq: ExRequest,
   ): Promise<Question> {
+    if (!exReq.session.participantId) {
+      this.setStatus(401);
+      throw new Error('Unauthorized');
+    }
+
+    if (!exReq.session.isAdmin) {
+      this.setStatus(403);
+      throw new Error('Only admin can update question');
+    }
+
     return await new QuestionService().update(questionId, requestBody);
   }
 
+  @Security('session_auth')
+  @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
+  @Response<ForbiddenErrorJson>(403, 'Forbidden')
   @Delete('{questionId}')
-  public async deleteQuestion(@Path() questionId: string): Promise<Question> {
+  public async deleteQuestion(
+    @Path() questionId: string,
+    @Request() exReq: ExRequest,
+  ): Promise<Question> {
+    if (!exReq.session.participantId) {
+      this.setStatus(401);
+      throw new Error('Unauthorized');
+    }
+
+    if (!exReq.session.isAdmin) {
+      this.setStatus(403);
+      throw new Error('Only admin can delete question');
+    }
+
     return await new QuestionService().delete(questionId);
   }
 }

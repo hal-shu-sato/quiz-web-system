@@ -6,8 +6,10 @@ import {
   Path,
   Post,
   Put,
+  Request,
   Response,
   Route,
+  Security,
 } from 'tsoa';
 
 import {
@@ -17,7 +19,12 @@ import {
 } from '../../services/participant';
 
 import type { Participant } from '../../../generated/prisma';
-import type { ValidateErrorJSON } from '../../types/errors';
+import type {
+  ForbiddenErrorJson,
+  UnauthorizedErrorJSON,
+  ValidateErrorJSON,
+} from '../../types/errors';
+import type { Request as ExRequest } from 'express';
 
 @Route('participants')
 export class ParticipantsController extends Controller {
@@ -40,19 +47,49 @@ export class ParticipantsController extends Controller {
     });
   }
 
+  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
+  @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
+  @Response<ForbiddenErrorJson>(403, 'Forbidden')
   @Put('{participantId}')
   public async updateParticipant(
     @Path() participantId: string,
     @Body() requestBody: ParticipantUpdateParams,
+    @Request() exReq: ExRequest,
   ): Promise<Participant> {
+    const sessionParticipantId = exReq.session.participantId;
+    if (!sessionParticipantId) {
+      this.setStatus(401);
+      throw new Error('Unauthorized');
+    }
+
+    if (sessionParticipantId !== participantId && !exReq.session.isAdmin) {
+      this.setStatus(403);
+      throw new Error('Only yourself or admin can update participant');
+    }
+
     return await new ParticipantService().update(participantId, requestBody);
   }
 
+  @Security('session_auth')
   @Delete('{participantId}')
+  @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
+  @Response<ForbiddenErrorJson>(403, 'Forbidden')
   public async deleteParticipant(
     @Path() participantId: string,
+    @Request() exReq: ExRequest,
   ): Promise<Participant> {
+    const sessionParticipantId = exReq.session.participantId;
+    if (!sessionParticipantId) {
+      this.setStatus(401);
+      throw new Error('Unauthorized');
+    }
+
+    if (sessionParticipantId !== participantId && !exReq.session.isAdmin) {
+      this.setStatus(403);
+      throw new Error('Only yourself or admin can delete participant');
+    }
+
     return await new ParticipantService().delete(participantId);
   }
 }
