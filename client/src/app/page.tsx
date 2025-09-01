@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import {
+  Alert,
   Button,
   Container,
   Paper,
@@ -10,11 +11,44 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
+
+import $api from '@/lib/api';
 
 export default function Home() {
   const [sessionCode, setSessionCode] = useState('');
+  const [name, setName] = useState('');
+  const [reconnectionCode, setReconnectionCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const router = useRouter();
+
+  const { mutate } = $api.useMutation('post', '/join');
+
+  const handleSubmit = () => {
+    setLoading(true);
+    setError('');
+    mutate(
+      {
+        body: {
+          code: sessionCode,
+          name: name,
+          reconnectionCode: reconnectionCode,
+        },
+      },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          router.push(`/${data.session.id}`);
+        },
+        onError: (error) => {
+          setError(error.message);
+          setLoading(false);
+        },
+      },
+    );
+  };
 
   return (
     <Container maxWidth="xs" sx={{ my: 3 }}>
@@ -23,6 +57,7 @@ export default function Home() {
           <Typography variant="h4" component="h1">
             参加
           </Typography>
+          {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="セッションコード"
             fullWidth
@@ -30,13 +65,26 @@ export default function Home() {
             required
             value={sessionCode}
             onChange={(e) => setSessionCode(e.target.value)}
-            error={!!error}
-            helperText={error}
+          />
+          <TextField
+            label="名前"
+            fullWidth
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            label="再接続コード"
+            fullWidth
+            required
+            value={reconnectionCode}
+            onChange={(e) => setReconnectionCode(e.target.value)}
           />
           <Button
             variant="contained"
             fullWidth
             disabled={loading || !sessionCode}
+            onClick={handleSubmit}
           >
             {loading ? '参加中...' : '参加'}
           </Button>
