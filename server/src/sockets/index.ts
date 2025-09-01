@@ -22,6 +22,7 @@ export function initializeSocket(httpServer: HttpServer) {
       cors: {
         origin: config.corsOrigin,
         methods: ['GET', 'POST'],
+        credentials: true,
       },
     },
   );
