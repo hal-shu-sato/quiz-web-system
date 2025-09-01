@@ -12,7 +12,7 @@ import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 
 import type { Participant, Session } from '../../../generated/prisma';
-import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
+import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 type JoinParams = Pick<Session, 'code'> &

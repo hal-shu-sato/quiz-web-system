@@ -25,7 +25,7 @@ import type {
   NotFoundErrorJSON,
   UnauthorizedErrorJSON,
   ValidateErrorJSON,
-} from '../../types/errors';
+} from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 @Route('answers')
