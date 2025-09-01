@@ -1,4 +1,5 @@
 client/.next
+client/src/lib/api/openapi.d.ts
 node_modules
 server/build
 server/dist
