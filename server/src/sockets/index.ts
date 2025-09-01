@@ -71,5 +71,28 @@ export function initializeSocket(httpServer: HttpServer) {
     socket.on('disconnect', () => {
       console.log('Admin disconnected:', socket.id);
     });
+
+    const sessionId = socket.request.session.sessionId;
+    if (!sessionId) {
+      console.error(
+        'No session ID found in session for admin socket:',
+        socket.id,
+      );
+      socket.disconnect(true);
+      return;
+    }
+
+    socket.join(sessionId);
+
+    const session = new SessionService().getById(sessionId);
+    session.then((s) => {
+      if (!s) {
+        console.error('Session not found for ID:', sessionId);
+        socket.disconnect(true);
+        return;
+      }
+
+      socket.emit('state:updated', mapPrismaStateToSocketState(s.state));
+    });
   });
 }
