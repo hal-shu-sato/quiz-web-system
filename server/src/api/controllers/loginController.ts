@@ -7,10 +7,8 @@ import type { Participant, Session } from '../../../generated/prisma';
 import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../types/errors';
 import type { Request as ExRequest } from 'express';
 
-type LoginParams = {
-  code: NonNullable<Session['code']>;
-  reconnectionCode: NonNullable<Participant['reconnectionCode']>;
-};
+type LoginParams = Pick<Session, 'code'> &
+  Pick<Participant, 'reconnectionCode'>;
 
 @Route('login')
 export class LoginController extends Controller {
@@ -21,7 +19,13 @@ export class LoginController extends Controller {
     @Body() requestBody: LoginParams,
     @Request() exReq: ExRequest,
   ): Promise<{ session: Session; participant: Participant }> {
-    const session = await new SessionService().getByCode(requestBody.code);
+    const { code, reconnectionCode } = requestBody;
+    if (!code || !reconnectionCode) {
+      this.setStatus(422);
+      throw new Error('Invalid session code or reconnection code');
+    }
+
+    const session = await new SessionService().getByCode(code);
     if (!session) {
       this.setStatus(404);
       throw new Error('Session not found');
@@ -29,7 +33,7 @@ export class LoginController extends Controller {
 
     const participant = await new ParticipantService().getByReconnectionCode(
       session.id,
-      requestBody.reconnectionCode,
+      reconnectionCode,
     );
     if (!participant) {
       this.setStatus(404);
