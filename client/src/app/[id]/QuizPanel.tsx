@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
+import { Box, Container, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+
+import $api from '@/lib/api';
 import { socket } from '@/socket';
 
 import { AnswerView, JudgeView, QuestionView, WaitView } from './_components';
@@ -12,6 +16,18 @@ import type { SessionStates } from '../admin/[id]/_components/StateChangeButtons
 export default function QuizPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
   const [judge, setJudge] = useState<Judge | null>(null);
+
+  const router = useRouter();
+
+  const { data, error, isLoading } = $api.useQuery(
+    'get',
+    '/sessions/{sessionId}',
+    {
+      params: {
+        path: { sessionId: id },
+      },
+    },
+  );
 
   useEffect(() => {
     function onConnect() {
@@ -53,9 +69,20 @@ export default function QuizPanel({ id }: { id: string }) {
     };
   }, []);
 
+  if (isLoading) {
+    return <Box>Loading...</Box>;
+  }
+
+  if (error || !data) {
+    router.push('/');
+    return <Box>Error loading session. Redirecting to home...</Box>;
+  }
+
   return (
-    <div>
-      <h1>Quiz Panel for {id}</h1>
+    <Container>
+      <Typography component="h1" variant="h4">
+        Quiz Panel for {data.title}
+      </Typography>
       {sessionState === 'wait' && <WaitView />}
       {sessionState === 'question' && <QuestionView />}
       {sessionState === 'answer' && <AnswerView />}
@@ -70,6 +97,6 @@ export default function QuizPanel({ id }: { id: string }) {
           showJudge={sessionState === 'judge_check'}
         />
       )}
-    </div>
+    </Container>
   );
 }
