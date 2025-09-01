@@ -83,7 +83,7 @@ export default function Home() {
           <Button
             variant="contained"
             fullWidth
-            disabled={loading || !sessionCode}
+            disabled={loading || !sessionCode || !name || !reconnectionCode}
             onClick={handleSubmit}
           >
             {loading ? '参加中...' : '参加'}
