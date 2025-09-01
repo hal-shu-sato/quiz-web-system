@@ -7,10 +7,18 @@
     "servers": ["quiz-api.atola.sh", "localhost:4000"],
     "specFileBaseName": "openapi",
     "specVersion": 3,
-    "basePath": "api"
+    "basePath": "api",
+    "securityDefinitions": {
+      "session_auth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "qsid"
+      }
+    }
   },
   "routes": {
     "routesDir": "src/build",
-    "basePath": "/api"
+    "basePath": "/api",
+    "authenticationModule": "./src/lib/authentication.ts"
   }
 }
