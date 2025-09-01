@@ -6,13 +6,18 @@ import {
   Response,
   Route,
   SuccessResponse,
+  ValidateError,
 } from 'tsoa';
 
+import {
+  NotFoundError,
+  type NotFoundErrorJSON,
+  type ValidateErrorJSON,
+} from '../../lib/errors';
 import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 
 import type { Participant, Session } from '../../../generated/prisma';
-import type { NotFoundErrorJSON, ValidateErrorJSON } from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 type JoinParams = Pick<Session, 'code'> &
@@ -31,13 +36,29 @@ export class JoinController extends Controller {
     const { code } = requestBody;
     if (!code) {
       this.setStatus(422);
-      throw new Error('Invalid session code');
+      throw new ValidateError(
+        {
+          code: {
+            message: 'Session code is required',
+            value: code,
+          },
+        },
+        'Invalid session code',
+      );
     }
 
     const session = await new SessionService().getByCode(code);
     if (!session) {
       this.setStatus(404);
-      throw new Error('Session not found');
+      throw new NotFoundError(
+        {
+          session: {
+            message: 'Session not found',
+            value: code,
+          },
+        },
+        'Session not found',
+      );
     }
 
     const participant = await new ParticipantService().create({

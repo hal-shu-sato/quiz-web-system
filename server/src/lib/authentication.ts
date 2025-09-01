@@ -1,3 +1,5 @@
+import { UnauthorizedError } from './errors';
+
 import type { Request } from 'express';
 
 export function expressAuthentication(
@@ -13,11 +15,12 @@ export function expressAuthentication(
       });
     }
 
-    return Promise.reject(new Error('Unauthorized'));
+    return Promise.reject(new UnauthorizedError({}, 'Unauthorized'));
   }
 
   return Promise.reject(
-    new Error(
+    new UnauthorizedError(
+      {},
       'No authentication handler configured for security scheme ' +
         securityName,
     ),

@@ -14,18 +14,21 @@ import {
 } from 'tsoa';
 
 import {
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+  type ForbiddenErrorJson,
+  type NotFoundErrorJSON,
+  type UnauthorizedErrorJSON,
+  type ValidateErrorJSON,
+} from '../../lib/errors';
+import {
   AnswerService,
   type AnswerUpdateParams,
   type AnswerCreationParams,
 } from '../../services/answer';
 
 import type { Answer } from '../../../generated/prisma';
-import type {
-  ForbiddenErrorJson,
-  NotFoundErrorJSON,
-  UnauthorizedErrorJSON,
-  ValidateErrorJSON,
-} from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 @Route('answers')
@@ -54,7 +57,7 @@ export class AnswersController extends Controller {
     const sessionParticipantId = exReq.session.participantId;
     if (!sessionParticipantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (
@@ -62,7 +65,7 @@ export class AnswersController extends Controller {
       !exReq.session.isAdmin
     ) {
       this.setStatus(403);
-      throw new Error('Only yourself or admin can create answer');
+      throw new ForbiddenError({}, 'Only yourself or admin can create answer');
     }
 
     return await new AnswerService().create({
@@ -90,13 +93,21 @@ export class AnswersController extends Controller {
     const sessionParticipantId = exReq.session.participantId;
     if (!sessionParticipantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     const answer = await new AnswerService().getById(answerId);
     if (!answer) {
       this.setStatus(404);
-      throw new Error('Answer not found');
+      throw new NotFoundError(
+        {
+          answer: {
+            message: 'Answer not found',
+            value: answerId,
+          },
+        },
+        'Answer not found',
+      );
     }
 
     if (
@@ -104,7 +115,7 @@ export class AnswersController extends Controller {
       !exReq.session.isAdmin
     ) {
       this.setStatus(403);
-      throw new Error('Only yourself or admin can update answer');
+      throw new ForbiddenError({}, 'Only yourself or admin can update answer');
     }
 
     return await new AnswerService().update(answerId, requestBody);
@@ -122,13 +133,21 @@ export class AnswersController extends Controller {
     const sessionParticipantId = exReq.session.participantId;
     if (!sessionParticipantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     const answer = await new AnswerService().getById(answerId);
     if (!answer) {
       this.setStatus(404);
-      throw new Error('Answer not found');
+      throw new NotFoundError(
+        {
+          answer: {
+            message: 'Answer not found',
+            value: answerId,
+          },
+        },
+        'Answer not found',
+      );
     }
 
     if (
@@ -136,7 +155,7 @@ export class AnswersController extends Controller {
       !exReq.session.isAdmin
     ) {
       this.setStatus(403);
-      throw new Error('Only yourself or admin can delete answer');
+      throw new ForbiddenError({}, 'Only yourself or admin can delete answer');
     }
 
     return await new AnswerService().delete(answerId);

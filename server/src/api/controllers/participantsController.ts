@@ -13,17 +13,19 @@ import {
 } from 'tsoa';
 
 import {
+  ForbiddenError,
+  UnauthorizedError,
+  type ForbiddenErrorJson,
+  type UnauthorizedErrorJSON,
+  type ValidateErrorJSON,
+} from '../../lib/errors';
+import {
   ParticipantService,
   type ParticipantCreationParams,
   type ParticipantUpdateParams,
 } from '../../services/participant';
 
 import type { Participant } from '../../../generated/prisma';
-import type {
-  ForbiddenErrorJson,
-  UnauthorizedErrorJSON,
-  ValidateErrorJSON,
-} from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 @Route('participants')
@@ -60,12 +62,15 @@ export class ParticipantsController extends Controller {
     const sessionParticipantId = exReq.session.participantId;
     if (!sessionParticipantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (sessionParticipantId !== participantId && !exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only yourself or admin can update participant');
+      throw new ForbiddenError(
+        {},
+        'Only yourself or admin can update participant',
+      );
     }
 
     return await new ParticipantService().update(participantId, requestBody);
@@ -82,12 +87,15 @@ export class ParticipantsController extends Controller {
     const sessionParticipantId = exReq.session.participantId;
     if (!sessionParticipantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (sessionParticipantId !== participantId && !exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only yourself or admin can delete participant');
+      throw new ForbiddenError(
+        {},
+        'Only yourself or admin can delete participant',
+      );
     }
 
     return await new ParticipantService().delete(participantId);

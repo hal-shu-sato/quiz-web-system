@@ -13,17 +13,19 @@ import {
 } from 'tsoa';
 
 import {
+  ForbiddenError,
+  UnauthorizedError,
+  type ForbiddenErrorJson,
+  type UnauthorizedErrorJSON,
+  type ValidateErrorJSON,
+} from '../../lib/errors';
+import {
   SessionService,
   type SessionCreationParams,
   type SessionUpdateParams,
 } from '../../services/session';
 
 import type { Session } from '../../../generated/prisma';
-import type {
-  ForbiddenErrorJson,
-  UnauthorizedErrorJSON,
-  ValidateErrorJSON,
-} from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 @Route('sessions')
@@ -44,12 +46,12 @@ export class SessionsController extends Controller {
   ): Promise<Session> {
     if (!exReq.session.participantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (!exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only admin can create session');
+      throw new ForbiddenError({}, 'Only admin can create session');
     }
 
     return await new SessionService().create({
@@ -72,12 +74,12 @@ export class SessionsController extends Controller {
   ): Promise<Session> {
     if (!exReq.session.participantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (!exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only admin can create session');
+      throw new ForbiddenError({}, 'Only admin can update session');
     }
 
     return await new SessionService().update(sessionId, requestBody);
@@ -93,12 +95,12 @@ export class SessionsController extends Controller {
   ): Promise<Session> {
     if (!exReq.session.participantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (!exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only admin can delete session');
+      throw new ForbiddenError({}, 'Only admin can delete session');
     }
 
     return await new SessionService().delete(sessionId);

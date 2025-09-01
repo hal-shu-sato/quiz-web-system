@@ -13,17 +13,19 @@ import {
 } from 'tsoa';
 
 import {
+  ForbiddenError,
+  UnauthorizedError,
+  type ForbiddenErrorJson,
+  type UnauthorizedErrorJSON,
+  type ValidateErrorJSON,
+} from '../../lib/errors';
+import {
   QuestionService,
   type QuestionCreationParams,
   type QuestionUpdateParams,
 } from '../../services/question';
 
 import type { Question } from '../../../generated/prisma';
-import type {
-  ForbiddenErrorJson,
-  UnauthorizedErrorJSON,
-  ValidateErrorJSON,
-} from '../../lib/errors';
 import type { Request as ExRequest } from 'express';
 
 @Route('questions')
@@ -46,12 +48,12 @@ export class QuestionsController extends Controller {
   ): Promise<Question> {
     if (!exReq.session.participantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (!exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only admin can create question');
+      throw new ForbiddenError({}, 'Only admin can create question');
     }
 
     return await new QuestionService().create({
@@ -73,12 +75,12 @@ export class QuestionsController extends Controller {
   ): Promise<Question> {
     if (!exReq.session.participantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (!exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only admin can update question');
+      throw new ForbiddenError({}, 'Only admin can update question');
     }
 
     return await new QuestionService().update(questionId, requestBody);
@@ -94,12 +96,12 @@ export class QuestionsController extends Controller {
   ): Promise<Question> {
     if (!exReq.session.participantId) {
       this.setStatus(401);
-      throw new Error('Unauthorized');
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (!exReq.session.isAdmin) {
       this.setStatus(403);
-      throw new Error('Only admin can delete question');
+      throw new ForbiddenError({}, 'Only admin can delete question');
     }
 
     return await new QuestionService().delete(questionId);
