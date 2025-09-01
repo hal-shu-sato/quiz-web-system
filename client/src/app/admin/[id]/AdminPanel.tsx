@@ -111,9 +111,12 @@ export default function AdminPanel({ id }: { id: string }) {
       });
     }
 
-    function onConnectError(err: Error) {
+    function onConnectError(err: Error & { code?: number }) {
       console.error('Admin socket connection error:', err.message);
-      router.push('/admin/login');
+
+      if (err.code === 1) {
+        router.push('/admin/login');
+      }
     }
 
     function onUpdateState(newState: SessionStates) {
