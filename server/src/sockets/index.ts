@@ -44,10 +44,10 @@ export function initializeSocket(httpServer: HttpServer) {
       return;
     }
 
-    socket.join(sessionId);
+    void socket.join(sessionId);
 
     const session = new SessionService().getById(sessionId);
-    session.then((s) => {
+    void session.then((s) => {
       if (!s) {
         console.error('Session not found for ID:', sessionId);
         socket.disconnect(true);
@@ -82,10 +82,10 @@ export function initializeSocket(httpServer: HttpServer) {
       return;
     }
 
-    socket.join(sessionId);
+    void socket.join(sessionId);
 
     const session = new SessionService().getById(sessionId);
-    session.then((s) => {
+    void session.then((s) => {
       if (!s) {
         console.error('Session not found for ID:', sessionId);
         socket.disconnect(true);
