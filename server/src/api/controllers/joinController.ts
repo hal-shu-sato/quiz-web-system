@@ -28,7 +28,7 @@ export class JoinController extends Controller {
     @Body() requestBody: JoinParams,
     @Request() exReq: ExRequest,
   ): Promise<{ session: Session; participant: Participant }> {
-    const code = requestBody.code;
+    const { code } = requestBody;
     if (!code) {
       this.setStatus(422);
       throw new Error('Invalid session code');
