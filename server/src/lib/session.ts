@@ -1,17 +1,8 @@
-import { RedisStore } from 'connect-redis';
 import session from 'express-session';
-import { createClient } from 'redis';
 
 import config from '../config';
 
-const redisClient = createClient({
-  url: config.redisUrl,
-});
-redisClient.connect().catch(console.error);
-
-const redisStore = new RedisStore({
-  client: redisClient,
-});
+import redisStore from './redis';
 
 const sessionMiddleware = session({
   secret: config.sessionSecret,
