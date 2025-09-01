@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
+import Link from '@/components/link';
 import $api from '@/lib/api';
 
 export default function Home() {
@@ -55,6 +56,7 @@ export default function Home() {
           <Typography variant="h4" component="h1">
             ログイン
           </Typography>
+          <Link href="/">新規参加はこちら</Link>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="セッションコード"
