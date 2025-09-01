@@ -15,7 +15,5 @@ export function mapPrismaStateToSocketState(state: $Enums.State): SessionState {
       return 'answer_check';
     case 'JUDGE_CHECK':
       return 'judge_check';
-    default:
-      throw new Error(`Unknown state: ${state}`);
   }
 }
