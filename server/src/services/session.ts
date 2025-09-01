@@ -2,10 +2,7 @@ import prisma from '../lib/prisma';
 
 import type { Session } from '../../generated/prisma';
 
-export type SessionCreationParams = Pick<
-  Session,
-  'title' | 'code' | 'startAt' | 'endAt'
->;
+export type SessionCreationParams = Pick<Session, 'title' | 'code'>;
 export type SessionUpdateParams = Partial<Session>;
 
 export class SessionService {
@@ -14,8 +11,8 @@ export class SessionService {
       data: {
         title: data.title,
         code: data.code,
-        startAt: data.startAt,
-        endAt: data.endAt,
+        startAt: null,
+        endAt: null,
       },
     });
   }

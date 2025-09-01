@@ -35,30 +35,17 @@ export class SessionsController extends Controller {
     return await new SessionService().getById(sessionId);
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
-  @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
-  @Response<ForbiddenErrorJson>(403, 'Forbidden')
   @Post()
   public async createSession(
     @Body() requestBody: SessionCreationParams,
     @Request() exReq: ExRequest,
   ): Promise<Session> {
-    if (!exReq.session.participantId) {
-      this.setStatus(401);
-      throw new UnauthorizedError({}, 'Unauthorized');
-    }
-
-    if (!exReq.session.isAdmin) {
-      this.setStatus(403);
-      throw new ForbiddenError({}, 'Only admin can create session');
-    }
+    exReq.session.isAdmin = true;
 
     return await new SessionService().create({
       title: requestBody.title,
       code: requestBody.code,
-      startAt: requestBody.startAt,
-      endAt: requestBody.endAt,
     });
   }
 
