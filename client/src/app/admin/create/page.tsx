@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import {
+  Alert,
   Button,
   Container,
   Paper,
@@ -24,6 +25,7 @@ export default function AdminCreate() {
           <Typography variant="h4" component="h1">
             セッション作成
           </Typography>
+          {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="セッション名"
             fullWidth
@@ -31,7 +33,6 @@ export default function AdminCreate() {
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            error={!!error}
           />
           <TextField
             label="セッションコード"
@@ -39,7 +40,6 @@ export default function AdminCreate() {
             required
             value={sessionCode}
             onChange={(e) => setSessionCode(e.target.value)}
-            error={!!error}
           />
           <Button
             variant="contained"
@@ -48,7 +48,6 @@ export default function AdminCreate() {
           >
             {loading ? '作成中...' : '作成'}
           </Button>
-          {error && <Typography color="error">{error}</Typography>}
         </Stack>
       </Paper>
     </Container>
