@@ -69,7 +69,7 @@ export default function AdminCreate() {
           <Button
             variant="contained"
             fullWidth
-            disabled={loading || !sessionCode}
+            disabled={loading || !title || !sessionCode}
             onClick={handleSubmit}
           >
             {loading ? '作成中...' : '作成'}
