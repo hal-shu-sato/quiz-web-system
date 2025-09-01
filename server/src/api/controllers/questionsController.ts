@@ -16,7 +16,7 @@ import {
   type QuestionUpdateParams,
 } from '../../services/question';
 
-import type { Question } from '../../generated/prisma';
+import type { Question } from '../../../generated/prisma';
 import type { ValidateErrorJSON } from '../../types/errors';
 
 @Route('questions')

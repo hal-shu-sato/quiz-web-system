@@ -17,7 +17,7 @@ import {
   type AnswerCreationParams,
 } from '../../services/answer';
 
-import type { Answer } from '../../generated/prisma';
+import type { Answer } from '../../../generated/prisma';
 import type { ValidateErrorJSON } from '../../types/errors';
 
 @Route('answers')

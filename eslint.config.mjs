@@ -12,7 +12,7 @@ export default tseslint.config(
       'client/out/',
       'client/next-env.d.ts',
       'server/dist/',
-      'server/src/generated/',
+      'server/generated/',
     ],
   },
   pluginJs.configs.recommended,

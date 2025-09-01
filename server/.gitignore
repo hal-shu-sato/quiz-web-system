@@ -138,5 +138,5 @@ dist
 /build
 /db
 /files
+/generated
 /src/build
-/src/generated

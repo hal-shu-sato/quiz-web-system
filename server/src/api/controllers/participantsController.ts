@@ -16,7 +16,7 @@ import {
   type ParticipantUpdateParams,
 } from '../../services/participant';
 
-import type { Participant } from '../../generated/prisma';
+import type { Participant } from '../../../generated/prisma';
 import type { ValidateErrorJSON } from '../../types/errors';
 
 @Route('participants')

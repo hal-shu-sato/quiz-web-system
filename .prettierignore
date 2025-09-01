@@ -2,5 +2,5 @@ client/.next
 node_modules
 server/build
 server/dist
+server/generated
 server/src/build
-server/src/generated

@@ -1,6 +1,6 @@
 import prisma from '../lib/prisma';
 
-import type { Question } from '../generated/prisma';
+import type { Question } from '../../generated/prisma';
 
 export type QuestionCreationParams = Pick<
   Question,
