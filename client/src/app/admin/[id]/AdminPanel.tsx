@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-import { adminSocket } from '@/socket';
+import adminSocket from '@/sockets/adminSocket';
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
 import {

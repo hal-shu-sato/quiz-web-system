@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { adminSocket } from '@/socket';
+import adminSocket from '@/sockets/adminSocket';
 
 import { ResultScreen, ScoreScreen } from './_components';
 

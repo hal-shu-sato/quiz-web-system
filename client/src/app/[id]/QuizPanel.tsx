@@ -6,7 +6,7 @@ import { Box, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 import $api from '@/lib/api';
-import { socket } from '@/socket';
+import socket from '@/sockets/socket';
 
 import { AnswerView, JudgeView, QuestionView, WaitView } from './_components';
 
