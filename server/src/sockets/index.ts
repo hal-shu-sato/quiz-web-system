@@ -13,6 +13,7 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from './events';
+import type { Request } from 'express';
 import type { Server as HttpServer } from 'http';
 
 export function initializeSocket(httpServer: HttpServer) {
@@ -38,7 +39,8 @@ export function initializeSocket(httpServer: HttpServer) {
       console.log('User disconnected:', socket.id);
     });
 
-    const sessionId = socket.request.session.sessionId;
+    const req = socket.request as Request;
+    const sessionId = req.session.sessionId;
     if (!sessionId) {
       console.error('No session ID found in session for socket:', socket.id);
       socket.disconnect(true);
@@ -73,7 +75,8 @@ export function initializeSocket(httpServer: HttpServer) {
       console.log('Admin disconnected:', socket.id);
     });
 
-    const sessionId = socket.request.session.sessionId;
+    const req = socket.request as Request;
+    const sessionId = req.session.sessionId;
     if (!sessionId) {
       console.error(
         'No session ID found in session for admin socket:',
