@@ -43,7 +43,7 @@ export function initializeSocket(httpServer: HttpServer) {
     const sessionId = req.session.sessionId;
     if (!sessionId) {
       console.error('No session ID found in session for socket:', socket.id);
-      socket.disconnect(true);
+      socket.disconnect();
       return;
     }
 
@@ -53,7 +53,7 @@ export function initializeSocket(httpServer: HttpServer) {
     void session.then((s) => {
       if (!s) {
         console.error('Session not found for ID:', sessionId);
-        socket.disconnect(true);
+        socket.disconnect();
         return;
       }
 
@@ -82,7 +82,7 @@ export function initializeSocket(httpServer: HttpServer) {
         'No session ID found in session for admin socket:',
         socket.id,
       );
-      socket.disconnect(true);
+      socket.disconnect();
       return;
     }
 
@@ -92,7 +92,7 @@ export function initializeSocket(httpServer: HttpServer) {
     void session.then((s) => {
       if (!s) {
         console.error('Session not found for ID:', sessionId);
-        socket.disconnect(true);
+        socket.disconnect();
         return;
       }
 
