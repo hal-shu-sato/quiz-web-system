@@ -1,6 +1,6 @@
 import { type Namespace, Server } from 'socket.io';
 
-import config from '../config';
+import { corsOptions } from '../lib/cors';
 import sessionMiddleware from '../lib/session';
 import { SessionService } from '../services/session';
 import { mapPrismaStateToSocketState } from '../util/enum';
@@ -20,11 +20,7 @@ export function initializeSocket(httpServer: HttpServer) {
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(
     httpServer,
     {
-      cors: {
-        origin: config.corsOrigin,
-        methods: ['GET', 'POST'],
-        credentials: true,
-      },
+      cors: corsOptions,
     },
   );
 

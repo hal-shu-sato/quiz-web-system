@@ -4,7 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import { ValidateError } from 'tsoa';
 
 import { RegisterRoutes } from './build/routes';
-import config from './config';
+import { corsOptions } from './lib/cors';
 import { ForbiddenError, NotFoundError, UnauthorizedError } from './lib/errors';
 import sessionMiddleware from './lib/session';
 
@@ -24,12 +24,7 @@ declare module 'express-session' {
 
 const app = express();
 
-app.use(
-  cors({
-    origin: config.corsOrigin,
-    credentials: true,
-  }),
-);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/files', express.static('files'));
