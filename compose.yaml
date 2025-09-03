@@ -20,19 +20,6 @@ services:
       timeout: 2s
       retries: 20
 
-  redis:
-    image: redis:8-alpine
-    hostname: redis
-    container_name: redis
-    command:
-      ['redis-server', '--appendonly', 'yes', '--requirepass', 'redispass']
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis-data:/data
-    networks:
-      - prisma-network
-
   server:
     build:
       context: .
@@ -44,8 +31,6 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
-      redis:
-        condition: service_started
     env_file:
       - server/.env.production.local
     networks:
@@ -70,9 +55,6 @@ services:
         condition: service_healthy
       server:
         condition: service_started
-
-volumes:
-  redis-data:
 
 networks:
   prisma-network:
