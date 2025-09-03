@@ -9,9 +9,15 @@ import type {
   AdminServerToClientEvents,
 } from '../../../server/src/sockets/events';
 
+const token = localStorage.getItem('token');
+
 const adminSocket: Socket<
   AdminServerToClientEvents,
   AdminClientToServerEvents
-> = io(URL + '/admin', { withCredentials: true });
+> = io(URL + '/admin', {
+  extraHeaders: {
+    authorization: `bearer ${token}`,
+  },
+});
 
 export default adminSocket;

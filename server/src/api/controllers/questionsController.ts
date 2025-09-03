@@ -13,9 +13,7 @@ import {
 } from 'tsoa';
 
 import {
-  ForbiddenError,
   UnauthorizedError,
-  type ForbiddenErrorJson,
   type UnauthorizedErrorJSON,
   type ValidateErrorJSON,
 } from '../../lib/errors';
@@ -37,23 +35,23 @@ export class QuestionsController extends Controller {
     return await new QuestionService().getById(questionId);
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
-  @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt', ['admin'])
   @Post()
   public async createQuestion(
     @Body() requestBody: QuestionCreationParams,
     @Request() exReq: ExRequest,
   ): Promise<Question> {
-    if (!exReq.session.participantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (!exReq.session.isAdmin) {
-      this.setStatus(403);
-      throw new ForbiddenError({}, 'Only admin can create question');
+    if (!user.participantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     return await new QuestionService().create({
@@ -63,45 +61,45 @@ export class QuestionsController extends Controller {
     });
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
-  @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt', ['admin'])
   @Put('{questionId}')
   public async updateQuestion(
     @Path() questionId: string,
     @Body() requestBody: QuestionUpdateParams,
     @Request() exReq: ExRequest,
   ): Promise<Question> {
-    if (!exReq.session.participantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (!exReq.session.isAdmin) {
-      this.setStatus(403);
-      throw new ForbiddenError({}, 'Only admin can update question');
+    if (!user.participantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     return await new QuestionService().update(questionId, requestBody);
   }
 
-  @Security('session_auth')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
-  @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt', ['admin'])
   @Delete('{questionId}')
   public async deleteQuestion(
     @Path() questionId: string,
     @Request() exReq: ExRequest,
   ): Promise<Question> {
-    if (!exReq.session.participantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (!exReq.session.isAdmin) {
-      this.setStatus(403);
-      throw new ForbiddenError({}, 'Only admin can delete question');
+    if (!user.participantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     return await new QuestionService().delete(questionId);

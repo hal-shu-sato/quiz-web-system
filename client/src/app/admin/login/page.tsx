@@ -33,8 +33,9 @@ export default function AdminLogin() {
         },
       },
       {
-        onSuccess: (session) => {
-          router.push(`/admin/${session.id}`);
+        onSuccess: (data) => {
+          localStorage.setItem('token', data.token);
+          router.push(`/admin/${data.session.id}`);
         },
         onError: (error) => {
           setError(error.message);

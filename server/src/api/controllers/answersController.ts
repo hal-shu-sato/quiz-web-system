@@ -45,24 +45,30 @@ export class AnswersController extends Controller {
     return await new AnswerService().listByParticipantId(participantId);
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
   @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt')
   @Post()
   public async createAnswer(
     @Body() requestBody: AnswerCreationParams,
     @Request() exReq: ExRequest,
   ): Promise<Answer> {
-    const sessionParticipantId = exReq.session.participantId;
-    if (!sessionParticipantId) {
+    const user = exReq.user;
+    if (!user) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
+    }
+
+    const userParticipantId = user.participantId;
+    if (!userParticipantId) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     if (
-      sessionParticipantId !== requestBody.participantId &&
-      !exReq.session.isAdmin
+      userParticipantId !== requestBody.participantId &&
+      user.scope !== 'admin'
     ) {
       this.setStatus(403);
       throw new ForbiddenError({}, 'Only yourself or admin can create answer');
@@ -79,19 +85,25 @@ export class AnswersController extends Controller {
     });
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
   @Response<NotFoundErrorJSON>(404, 'Not Found')
   @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt')
   @Put('{answerId}')
   public async updateAnswer(
     @Path() answerId: string,
     @Body() requestBody: AnswerUpdateParams,
     @Request() exReq: ExRequest,
   ): Promise<Answer> {
-    const sessionParticipantId = exReq.session.participantId;
-    if (!sessionParticipantId) {
+    const user = exReq.user;
+    if (!user) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
+    }
+
+    const userParticipantId = user.participantId;
+    if (!userParticipantId) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
@@ -110,10 +122,7 @@ export class AnswersController extends Controller {
       );
     }
 
-    if (
-      sessionParticipantId !== answer.participantId &&
-      !exReq.session.isAdmin
-    ) {
+    if (userParticipantId !== answer.participantId && user.scope !== 'admin') {
       this.setStatus(403);
       throw new ForbiddenError({}, 'Only yourself or admin can update answer');
     }
@@ -121,17 +130,23 @@ export class AnswersController extends Controller {
     return await new AnswerService().update(answerId, requestBody);
   }
 
-  @Security('session_auth')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
   @Response<ForbiddenErrorJson>(403, 'Forbidden')
   @Response<NotFoundErrorJSON>(404, 'Not Found')
+  @Security('jwt')
   @Delete('{answerId}')
   public async deleteAnswer(
     @Path() answerId: string,
     @Request() exReq: ExRequest,
   ): Promise<Answer> {
-    const sessionParticipantId = exReq.session.participantId;
-    if (!sessionParticipantId) {
+    const user = exReq.user;
+    if (!user) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
+    }
+
+    const userParticipantId = user.participantId;
+    if (!userParticipantId) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
@@ -150,10 +165,7 @@ export class AnswersController extends Controller {
       );
     }
 
-    if (
-      sessionParticipantId !== answer.participantId &&
-      !exReq.session.isAdmin
-    ) {
+    if (userParticipantId !== answer.participantId && user.scope !== 'admin') {
       this.setStatus(403);
       throw new ForbiddenError({}, 'Only yourself or admin can delete answer');
     }

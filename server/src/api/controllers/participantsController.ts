@@ -49,23 +49,29 @@ export class ParticipantsController extends Controller {
     });
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
   @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt')
   @Put('{participantId}')
   public async updateParticipant(
     @Path() participantId: string,
     @Body() requestBody: ParticipantUpdateParams,
     @Request() exReq: ExRequest,
   ): Promise<Participant> {
-    const sessionParticipantId = exReq.session.participantId;
-    if (!sessionParticipantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (sessionParticipantId !== participantId && !exReq.session.isAdmin) {
+    const userParticipantId = user.participantId;
+    if (!userParticipantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
+    }
+
+    if (userParticipantId !== participantId && user.scope !== 'admin') {
       this.setStatus(403);
       throw new ForbiddenError(
         {},
@@ -76,21 +82,27 @@ export class ParticipantsController extends Controller {
     return await new ParticipantService().update(participantId, requestBody);
   }
 
-  @Security('session_auth')
-  @Delete('{participantId}')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
   @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt')
+  @Delete('{participantId}')
   public async deleteParticipant(
     @Path() participantId: string,
     @Request() exReq: ExRequest,
   ): Promise<Participant> {
-    const sessionParticipantId = exReq.session.participantId;
-    if (!sessionParticipantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (sessionParticipantId !== participantId && !exReq.session.isAdmin) {
+    const userParticipantId = user.participantId;
+    if (!userParticipantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
+    }
+
+    if (userParticipantId !== participantId && user.scope !== 'admin') {
       this.setStatus(403);
       throw new ForbiddenError(
         {},

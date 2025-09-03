@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import {
   Body,
   Controller,
@@ -12,10 +13,9 @@ import {
   Security,
 } from 'tsoa';
 
+import config from '../../config';
 import {
-  ForbiddenError,
   UnauthorizedError,
-  type ForbiddenErrorJson,
   type UnauthorizedErrorJSON,
   type ValidateErrorJSON,
 } from '../../lib/errors';
@@ -39,59 +39,72 @@ export class SessionsController extends Controller {
   @Post()
   public async createSession(
     @Body() requestBody: SessionCreationParams,
-    @Request() exReq: ExRequest,
-  ): Promise<Session> {
+  ): Promise<{ token: string; session: Session }> {
     const session = await new SessionService().create({
       title: requestBody.title,
       code: requestBody.code,
     });
 
-    exReq.session.sessionId = session.id;
-    exReq.session.participantId = 'admin';
-    exReq.session.isAdmin = true;
+    const user: Express.User = {
+      sessionId: session.id,
+      participantId: 'admin',
+      scope: 'admin',
+    };
 
-    return session;
+    const token = jwt.sign(
+      {
+        data: user,
+      },
+      config.jwtSecret,
+      {
+        issuer: config.jwtIssuer,
+        audience: config.jwtAudience,
+        expiresIn: '1h',
+      },
+    );
+
+    return { token, session };
   }
 
-  @Security('session_auth')
   @Response<ValidateErrorJSON>(422, 'Validation Failed')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
-  @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt', ['admin'])
   @Put('{sessionId}')
   public async updateSession(
     @Path() sessionId: string,
     @Body() requestBody: SessionUpdateParams,
     @Request() exReq: ExRequest,
   ): Promise<Session> {
-    if (!exReq.session.participantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (!exReq.session.isAdmin) {
-      this.setStatus(403);
-      throw new ForbiddenError({}, 'Only admin can update session');
+    if (!user.participantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     return await new SessionService().update(sessionId, requestBody);
   }
 
-  @Security('session_auth')
   @Response<UnauthorizedErrorJSON>(401, 'Unauthorized')
-  @Response<ForbiddenErrorJson>(403, 'Forbidden')
+  @Security('jwt', ['admin'])
   @Delete('{sessionId}')
   public async deleteSession(
     @Path() sessionId: string,
     @Request() exReq: ExRequest,
   ): Promise<Session> {
-    if (!exReq.session.participantId) {
+    const user = exReq.user;
+    if (!user) {
       this.setStatus(401);
       throw new UnauthorizedError({}, 'Unauthorized');
     }
 
-    if (!exReq.session.isAdmin) {
-      this.setStatus(403);
-      throw new ForbiddenError({}, 'Only admin can delete session');
+    if (!user.participantId) {
+      this.setStatus(401);
+      throw new UnauthorizedError({}, 'Unauthorized');
     }
 
     return await new SessionService().delete(sessionId);

@@ -32,8 +32,8 @@ export default function AdminCreate() {
       { body: { title, code: sessionCode } },
       {
         onSuccess: (data) => {
-          router.push(`/admin/${data.id}`);
-          setLoading(false);
+          localStorage.setItem('token', data.token);
+          router.push(`/admin/${data.session.id}`);
         },
         onError: (err) => {
           setError(err.message || 'セッションの作成に失敗しました');

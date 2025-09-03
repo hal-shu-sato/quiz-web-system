@@ -38,7 +38,7 @@ export default function Home() {
       },
       {
         onSuccess: (data) => {
-          console.log(data);
+          localStorage.setItem('token', data.token);
           router.push(`/${data.session.id}`);
         },
         onError: (error) => {

@@ -1,13 +1,7 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Request,
-  Response,
-  Route,
-  ValidateError,
-} from 'tsoa';
+import jwt from 'jsonwebtoken';
+import { Body, Controller, Post, Response, Route, ValidateError } from 'tsoa';
 
+import config from '../../config';
 import {
   NotFoundError,
   type NotFoundErrorJSON,
@@ -16,7 +10,6 @@ import {
 import { SessionService } from '../../services/session';
 
 import type { Session } from '../../../generated/prisma';
-import type { Request as ExRequest } from 'express';
 
 type AdminLoginParams = Pick<Session, 'code'>;
 
@@ -27,8 +20,7 @@ export class AdminLoginController extends Controller {
   @Post()
   public async adminLogin(
     @Body() requestBody: AdminLoginParams,
-    @Request() exReq: ExRequest,
-  ): Promise<Session> {
+  ): Promise<{ token: string; session: Session }> {
     const { code } = requestBody;
     if (!code) {
       this.setStatus(422);
@@ -57,18 +49,24 @@ export class AdminLoginController extends Controller {
       );
     }
 
-    exReq.session.regenerate((err: Error) => {
-      if (err) throw err;
+    const user: Express.User = {
+      sessionId: session.id,
+      participantId: 'admin',
+      scope: 'admin',
+    };
 
-      exReq.session.sessionId = session.id;
-      exReq.session.participantId = 'admin';
-      exReq.session.isAdmin = true;
+    const token = jwt.sign(
+      {
+        data: user,
+      },
+      config.jwtSecret,
+      {
+        issuer: config.jwtIssuer,
+        audience: config.jwtAudience,
+        expiresIn: '1h',
+      },
+    );
 
-      exReq.session.save((err: Error) => {
-        if (err) throw err;
-      });
-    });
-
-    return session;
+    return { token, session };
   }
 }

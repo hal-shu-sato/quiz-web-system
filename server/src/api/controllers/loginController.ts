@@ -1,14 +1,15 @@
+import jwt from 'jsonwebtoken';
 import {
   Body,
   Controller,
   Post,
-  Request,
   Response,
   Route,
   ValidateError,
   type FieldErrors,
 } from 'tsoa';
 
+import config from '../../config';
 import {
   NotFoundError,
   type NotFoundErrorJSON,
@@ -18,7 +19,6 @@ import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 
 import type { Participant, Session } from '../../../generated/prisma';
-import type { Request as ExRequest } from 'express';
 
 type LoginParams = Pick<Session, 'code'> &
   Pick<Participant, 'reconnectionCode'>;
@@ -30,8 +30,7 @@ export class LoginController extends Controller {
   @Post()
   public async login(
     @Body() requestBody: LoginParams,
-    @Request() exReq: ExRequest,
-  ): Promise<{ session: Session; participant: Participant }> {
+  ): Promise<{ token: string; session: Session; participant: Participant }> {
     const { code, reconnectionCode } = requestBody;
     if (!code || !reconnectionCode) {
       const fields: FieldErrors = {};
@@ -86,18 +85,24 @@ export class LoginController extends Controller {
       );
     }
 
-    exReq.session.regenerate((err: Error) => {
-      if (err) throw err;
+    const user: Express.User = {
+      sessionId: session.id,
+      participantId: participant.id,
+      scope: 'participant',
+    };
 
-      exReq.session.sessionId = session.id;
-      exReq.session.participantId = participant.id;
-      exReq.session.isAdmin = false;
+    const token = jwt.sign(
+      {
+        data: user,
+      },
+      config.jwtSecret,
+      {
+        issuer: config.jwtIssuer,
+        audience: config.jwtAudience,
+        expiresIn: '1h',
+      },
+    );
 
-      exReq.session.save((err: Error) => {
-        if (err) throw err;
-      });
-    });
-
-    return { session, participant };
+    return { token, session, participant };
   }
 }

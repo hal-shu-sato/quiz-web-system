@@ -1,14 +1,15 @@
+import jwt from 'jsonwebtoken';
 import {
   Body,
   Controller,
   Post,
-  Request,
   Response,
   Route,
   SuccessResponse,
   ValidateError,
 } from 'tsoa';
 
+import config from '../../config';
 import {
   NotFoundError,
   type NotFoundErrorJSON,
@@ -18,7 +19,6 @@ import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 
 import type { Participant, Session } from '../../../generated/prisma';
-import type { Request as ExRequest } from 'express';
 
 type JoinParams = Pick<Session, 'code'> &
   Pick<Participant, 'name' | 'reconnectionCode'>;
@@ -31,8 +31,7 @@ export class JoinController extends Controller {
   @Post()
   public async join(
     @Body() requestBody: JoinParams,
-    @Request() exReq: ExRequest,
-  ): Promise<{ session: Session; participant: Participant }> {
+  ): Promise<{ token: string; session: Session; participant: Participant }> {
     const { code } = requestBody;
     if (!code) {
       this.setStatus(422);
@@ -67,11 +66,25 @@ export class JoinController extends Controller {
       reconnectionCode: requestBody.reconnectionCode,
     });
 
-    exReq.session.sessionId = session.id;
-    exReq.session.participantId = participant.id;
-    exReq.session.isAdmin = false;
+    const user: Express.User = {
+      sessionId: session.id,
+      participantId: participant.id,
+      scope: 'participant',
+    };
+
+    const token = jwt.sign(
+      {
+        data: user,
+      },
+      config.jwtSecret,
+      {
+        issuer: config.jwtIssuer,
+        audience: config.jwtAudience,
+        expiresIn: '1h',
+      },
+    );
 
     this.setStatus(201);
-    return { session, participant };
+    return { token, session, participant };
   }
 }

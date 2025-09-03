@@ -9,8 +9,12 @@ import type {
   ServerToClientEvents,
 } from '../../../server/src/sockets/events';
 
+const token = localStorage.getItem('token');
+
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(URL, {
-  withCredentials: true,
+  extraHeaders: {
+    authorization: `bearer ${token}`,
+  },
 });
 
 export default socket;

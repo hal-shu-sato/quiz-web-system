@@ -1,24 +1,29 @@
 import cors from 'cors';
 import express from 'express';
+import passport from 'passport';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import swaggerUi from 'swagger-ui-express';
 import { ValidateError } from 'tsoa';
 
 import { RegisterRoutes } from './build/routes';
+import config from './config';
 import { corsOptions } from './lib/cors';
 import { ForbiddenError, NotFoundError, UnauthorizedError } from './lib/errors';
-import sessionMiddleware from './lib/session';
 
 import type {
   Request as ExRequest,
   Response as ExResponse,
   NextFunction,
 } from 'express';
+import type { StrategyOptionsWithoutRequest } from 'passport-jwt';
 
-declare module 'express-session' {
-  interface SessionData {
-    sessionId: string;
-    participantId: string;
-    isAdmin: boolean;
+declare global {
+  namespace Express {
+    interface User {
+      scope: 'admin' | 'participant';
+      sessionId: string;
+      participantId: string;
+    }
   }
 }
 
@@ -34,9 +39,20 @@ app.use('/docs', swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
   );
 });
 
-app.use(sessionMiddleware);
-
 RegisterRoutes(app);
+
+const jwtDecodeOptions: StrategyOptionsWithoutRequest = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: config.jwtSecret,
+  issuer: config.jwtIssuer,
+  audience: config.jwtAudience,
+};
+
+passport.use(
+  new JwtStrategy(jwtDecodeOptions, (payload: { data: unknown }, done) => {
+    return done(null, payload.data);
+  }),
+);
 
 app.use(function notFoundHandler(_req, res: ExResponse) {
   res.status(404).send({
