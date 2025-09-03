@@ -86,9 +86,17 @@ export class LoginController extends Controller {
       );
     }
 
-    exReq.session.sessionId = session.id;
-    exReq.session.participantId = participant.id;
-    exReq.session.isAdmin = false;
+    exReq.session.regenerate((err: Error) => {
+      if (err) throw err;
+
+      exReq.session.sessionId = session.id;
+      exReq.session.participantId = participant.id;
+      exReq.session.isAdmin = false;
+
+      exReq.session.save((err: Error) => {
+        if (err) throw err;
+      });
+    });
 
     return { session, participant };
   }

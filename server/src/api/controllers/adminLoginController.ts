@@ -57,9 +57,17 @@ export class AdminLoginController extends Controller {
       );
     }
 
-    exReq.session.sessionId = session.id;
-    exReq.session.participantId = 'admin';
-    exReq.session.isAdmin = true;
+    exReq.session.regenerate((err: Error) => {
+      if (err) throw err;
+
+      exReq.session.sessionId = session.id;
+      exReq.session.participantId = 'admin';
+      exReq.session.isAdmin = true;
+
+      exReq.session.save((err: Error) => {
+        if (err) throw err;
+      });
+    });
 
     return session;
   }
