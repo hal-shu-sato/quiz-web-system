@@ -21,7 +21,7 @@
     "watch:tsc": "tsc -w -p ."
   },
   "dependencies": {
-    "@prisma/client": "^6.15.0",
+    "@prisma/client": "^6.16.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -39,7 +39,7 @@
     "@types/swagger-ui-express": "^4.1.8",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
-    "prisma": "^6.15.0"
+    "prisma": "^6.16.1"
   },
   "packageManager": "yarn@1.22.22"
 }
