@@ -3746,10 +3746,10 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-konva@^9.3.22:
-  version "9.3.22"
-  resolved "https://registry.yarnpkg.com/konva/-/konva-9.3.22.tgz#aa979c410127dda20bf0788ab70a414648c25a91"
-  integrity sha512-yQI5d1bmELlD/fowuyfOp9ff+oamg26WOCkyqUyc+nczD/lhRa3EvD2MZOoc4c1293TAubW9n34fSQLgSeEgSw==
+konva@^10.0.4:
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-10.0.4.tgz#a30e7b89f6638ecc58d5af722bd0d3b044812ba7"
+  integrity sha512-RpK5DpY2WZ9ITBVD+tU5ozkfxAuyVO9yofIRUiuxBP4CEGVyyIhw/UbpJM9hBTv01vM5h0YJ0zfpdzLosQ1exg==
 
 language-subtag-registry@^0.3.20:
   version "0.3.23"
