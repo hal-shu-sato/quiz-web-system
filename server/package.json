@@ -21,7 +21,7 @@
     "watch:tsc": "tsc -w -p ."
   },
   "dependencies": {
-    "@prisma/client": "^6.16.1",
+    "@prisma/client": "^7.0.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
