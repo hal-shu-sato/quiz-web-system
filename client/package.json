@@ -31,7 +31,7 @@
   "devDependencies": {
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "eslint-config-next": "^15.5.7",
+    "eslint-config-next": "^16.0.7",
     "openapi-typescript": "^7.10.1"
   },
   "packageManager": "yarn@1.22.22"
