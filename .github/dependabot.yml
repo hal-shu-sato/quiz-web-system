@@ -44,3 +44,7 @@ updates:
       prettier:
         patterns:
           - 'prettier*'
+      prisma:
+        patterns:
+          - '@prisma/*'
+          - 'prisma'
