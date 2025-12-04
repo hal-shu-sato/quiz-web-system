@@ -9,11 +9,6 @@ updates:
     directory: '/' # Location of package manifests
     schedule:
       interval: 'daily'
-
-  - package-ecosystem: 'npm'
-    directory: '/client/'
-    schedule:
-      interval: 'daily'
     groups:
       next:
         patterns:
@@ -24,19 +19,6 @@ updates:
         patterns:
           - 'react'
           - 'react-dom'
-      eslint:
-        patterns:
-          - '@eslint/*'
-          - 'eslint*'
-      prettier:
-        patterns:
-          - 'prettier*'
-
-  - package-ecosystem: 'npm'
-    directory: '/server/'
-    schedule:
-      interval: 'daily'
-    groups:
       eslint:
         patterns:
           - '@eslint/*'
