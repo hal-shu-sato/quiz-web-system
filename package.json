@@ -30,20 +30,20 @@
     "start:server": "yarn workspace quiz-web-system-server start"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.35.0",
-    "@types/node": "^24.3.1",
-    "eslint": "^9.35.0",
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "globals": "^16.4.0",
+    "globals": "^16.5.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.6",
+    "lint-staged": "^16.2.7",
     "npm-run-all2": "^8.0.4",
-    "prettier": "^3.6.2",
-    "prettier-plugin-packagejson": "^2.5.19",
+    "prettier": "^3.7.4",
+    "prettier-plugin-packagejson": "^2.5.20",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.43.0"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1"
   }
 }
