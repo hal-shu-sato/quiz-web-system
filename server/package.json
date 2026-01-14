@@ -21,13 +21,13 @@
     "watch:tsc": "tsc -w -p ."
   },
   "dependencies": {
-    "@prisma/client": "^6.19.1",
+    "@prisma/client": "^6.19.2",
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "socket.io": "^4.8.1",
+    "socket.io": "^4.8.3",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0"
   },
@@ -39,7 +39,7 @@
     "@types/swagger-ui-express": "^4.1.8",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.11",
-    "prisma": "^6.19.1"
+    "prisma": "^6.19.2"
   },
   "packageManager": "yarn@1.22.22"
 }
