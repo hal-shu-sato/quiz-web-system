@@ -21,7 +21,7 @@
     "konva": "^9.3.22",
     "next": "^15.5.12",
     "openapi-fetch": "^0.15.0",
-    "openapi-react-query": "^0.5.1",
+    "openapi-react-query": "^0.5.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-konva": "^19.2.2",
