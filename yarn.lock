@@ -4163,10 +4163,10 @@ openapi-fetch@^0.15.0:
   dependencies:
     openapi-typescript-helpers "^0.0.15"
 
-openapi-react-query@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/openapi-react-query/-/openapi-react-query-0.5.1.tgz#4610b5a830130a97c62cc12d679c65d551a9c76c"
-  integrity sha512-BzUDxICV9v8584pBiGM9jgCqSBBp/mP91SJ68Pu7PqeppqfWxazi3vVaMup5Acjxv3cN9GbV6xuVHfbGsJfexw==
+openapi-react-query@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/openapi-react-query/-/openapi-react-query-0.5.3.tgz#8b263f061dd683a3d9fbe3f37b47bc2e8ec2a518"
+  integrity sha512-uD0XclWRe7xImerR9kTnKM2SMmeBPfFYztN41S0G8knV4Vw+wlcE6Fp3hNvBe49U4ON9N+WWOsyvB/8EqF6CGQ==
   dependencies:
     openapi-typescript-helpers "^0.0.15"
 
