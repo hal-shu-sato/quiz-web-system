@@ -38,7 +38,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/swagger-ui-express": "^4.1.8",
     "concurrently": "^9.2.1",
-    "nodemon": "^3.1.11",
+    "nodemon": "^3.1.14",
     "prisma": "^6.19.2"
   },
   "packageManager": "yarn@1.22.22"

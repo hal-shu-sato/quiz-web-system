@@ -14,25 +14,25 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.7",
-    "@mui/material": "^7.3.7",
-    "@mui/material-nextjs": "^7.3.7",
-    "@tanstack/react-query": "^5.90.20",
+    "@mui/icons-material": "^7.3.9",
+    "@mui/material": "^7.3.9",
+    "@mui/material-nextjs": "^7.3.9",
+    "@tanstack/react-query": "^5.95.2",
     "konva": "^9.3.22",
-    "next": "^15.5.12",
-    "openapi-fetch": "^0.15.0",
-    "openapi-react-query": "^0.5.1",
+    "next": "^15.5.14",
+    "openapi-fetch": "^0.17.0",
+    "openapi-react-query": "^0.5.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-konva": "^19.2.2",
+    "react-konva": "^19.2.3",
     "sharp": "^0.34.5",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
-    "@types/react": "^19.2.13",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint-config-next": "^15.5.12",
-    "openapi-typescript": "^7.10.1"
+    "eslint-config-next": "^15.5.14",
+    "openapi-typescript": "^7.13.0"
   },
   "packageManager": "yarn@1.22.22"
 }
