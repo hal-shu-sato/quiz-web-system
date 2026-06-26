@@ -2,9 +2,9 @@ import passport from 'passport';
 import { type Namespace, Server } from 'socket.io';
 
 import { corsOptions } from '../lib/cors';
-import { SessionService } from '../services/session';
-import { mapPrismaStateToSocketState } from '../util/enum';
+import { SocketDataService } from '../services/socketData';
 
+import { broadcastAdminSnapshot } from './broadcast';
 import { registerAdminHandlers, registerMainHandlers } from './handlers';
 
 import type {
@@ -24,6 +24,11 @@ export function initializeSocket(httpServer: HttpServer) {
     },
   );
 
+  const adminNamespace: Namespace<
+    AdminClientToServerEvents,
+    AdminServerToClientEvents
+  > = io.of('/admin');
+
   io.engine.use(
     (
       req: Request & { _query: { sid?: string } },
@@ -42,12 +47,6 @@ export function initializeSocket(httpServer: HttpServer) {
   io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
-    registerMainHandlers(io, socket);
-
-    socket.on('disconnect', () => {
-      console.log('User disconnected:', socket.id);
-    });
-
     const req = socket.request as Request;
     const user = req.user;
     if (!user) {
@@ -65,31 +64,32 @@ export function initializeSocket(httpServer: HttpServer) {
 
     void socket.join(sessionId);
 
-    const session = new SessionService().getById(sessionId);
-    void session.then((s) => {
-      if (!s) {
+    registerMainHandlers(io, adminNamespace, socket);
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+    });
+
+    void (async () => {
+      const socketData = new SocketDataService();
+      const state = await socketData.getSessionState(sessionId);
+      if (!state) {
         console.error('Session not found for ID:', sessionId);
         socket.disconnect();
         return;
       }
 
-      socket.emit('state:updated', mapPrismaStateToSocketState(s.state));
-    });
-  });
+      socket.emit('state:updated', state);
+      socket.emit('question:updated', await socketData.getQuestion(sessionId));
 
-  const adminNamespace: Namespace<
-    AdminClientToServerEvents,
-    AdminServerToClientEvents
-  > = io.of('/admin');
+      if (state === 'answer_check' || state === 'judge_check') {
+        socket.emit('answers:updated', await socketData.getAnswers(sessionId));
+      }
+    })();
+  });
 
   adminNamespace.on('connection', (socket) => {
     console.log('Admin connected:', socket.id);
-
-    registerAdminHandlers(io, adminNamespace, socket);
-
-    socket.on('disconnect', () => {
-      console.log('Admin disconnected:', socket.id);
-    });
 
     const req = socket.request as Request;
     const user = req.user;
@@ -109,17 +109,20 @@ export function initializeSocket(httpServer: HttpServer) {
       return;
     }
 
+    if (user.scope !== 'admin') {
+      console.error('Non-admin user connected to admin namespace:', socket.id);
+      socket.disconnect();
+      return;
+    }
+
     void socket.join(sessionId);
 
-    const session = new SessionService().getById(sessionId);
-    void session.then((s) => {
-      if (!s) {
-        console.error('Session not found for ID:', sessionId);
-        socket.disconnect();
-        return;
-      }
+    registerAdminHandlers(io, adminNamespace, socket);
 
-      socket.emit('state:updated', mapPrismaStateToSocketState(s.state));
+    socket.on('disconnect', () => {
+      console.log('Admin disconnected:', socket.id);
     });
+
+    void broadcastAdminSnapshot(io, adminNamespace, sessionId);
   });
 }
