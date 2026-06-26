@@ -10,6 +10,7 @@ import {
 } from 'tsoa';
 
 import config from '../../config';
+import { generateReconnectionCode } from '../../lib/reconnectionCode';
 import {
   NotFoundError,
   type NotFoundErrorJSON,
@@ -21,7 +22,21 @@ import { SessionService } from '../../services/session';
 import type { Participant, Session } from '../../../generated/prisma';
 
 type JoinParams = Pick<Session, 'code'> &
-  Pick<Participant, 'name' | 'reconnectionCode'>;
+  Partial<Pick<Participant, 'name' | 'reconnectionCode'>>;
+
+function signParticipantToken(sessionId: string, participantId: string) {
+  const user: Express.User = {
+    sessionId,
+    participantId,
+    scope: 'participant',
+  };
+
+  return jwt.sign({ data: user }, config.jwtSecret, {
+    issuer: config.jwtIssuer,
+    audience: config.jwtAudience,
+    expiresIn: '24h',
+  });
+}
 
 @Route('join')
 export class JoinController extends Controller {
@@ -32,7 +47,7 @@ export class JoinController extends Controller {
   public async join(
     @Body() requestBody: JoinParams,
   ): Promise<{ token: string; session: Session; participant: Participant }> {
-    const { code } = requestBody;
+    const { code, name, reconnectionCode } = requestBody;
     if (!code) {
       this.setStatus(422);
       throw new ValidateError(
@@ -43,6 +58,19 @@ export class JoinController extends Controller {
           },
         },
         'Invalid session code',
+      );
+    }
+
+    if (!name?.trim()) {
+      this.setStatus(422);
+      throw new ValidateError(
+        {
+          name: {
+            message: 'Name is required',
+            value: name,
+          },
+        },
+        'Invalid name',
       );
     }
 
@@ -60,31 +88,55 @@ export class JoinController extends Controller {
       );
     }
 
-    const participant = await new ParticipantService().create({
+    const participantService = new ParticipantService();
+
+    if (reconnectionCode) {
+      const existing = await participantService.getByReconnectionCode(
+        session.id,
+        reconnectionCode,
+      );
+
+      if (existing) {
+        const participant = await participantService.update(existing.id, {
+          name: name.trim(),
+        });
+
+        return {
+          token: signParticipantToken(session.id, participant.id),
+          session,
+          participant,
+        };
+      }
+    }
+
+    let nextCode = reconnectionCode?.trim() || generateReconnectionCode();
+    let attempts = 0;
+
+    while (attempts < 10) {
+      const duplicate = await participantService.getByReconnectionCode(
+        session.id,
+        nextCode,
+      );
+
+      if (!duplicate) {
+        break;
+      }
+
+      nextCode = generateReconnectionCode();
+      attempts += 1;
+    }
+
+    const participant = await participantService.create({
       sessionId: session.id,
-      name: requestBody.name,
-      reconnectionCode: requestBody.reconnectionCode,
+      name: name.trim(),
+      reconnectionCode: nextCode,
     });
 
-    const user: Express.User = {
-      sessionId: session.id,
-      participantId: participant.id,
-      scope: 'participant',
-    };
-
-    const token = jwt.sign(
-      {
-        data: user,
-      },
-      config.jwtSecret,
-      {
-        issuer: config.jwtIssuer,
-        audience: config.jwtAudience,
-        expiresIn: '1h',
-      },
-    );
-
     this.setStatus(201);
-    return { token, session, participant };
+    return {
+      token: signParticipantToken(session.id, participant.id),
+      session,
+      participant,
+    };
   }
 }
