@@ -9,15 +9,25 @@ import type {
   AdminServerToClientEvents,
 } from '../../../server/src/sockets/events';
 
-const token = localStorage.getItem('token');
+function createAdminSocket() {
+  return io(`${URL}/admin`, {
+    extraHeaders: {
+      authorization: `bearer ${localStorage.getItem('token') ?? ''}`,
+    },
+  });
+}
 
 const adminSocket: Socket<
   AdminServerToClientEvents,
   AdminClientToServerEvents
-> = io(URL + '/admin', {
-  extraHeaders: {
-    authorization: `bearer ${token}`,
-  },
-});
+> = createAdminSocket();
+
+export function reconnectAdminSocket() {
+  adminSocket.disconnect();
+  adminSocket.io.opts.extraHeaders = {
+    authorization: `bearer ${localStorage.getItem('token') ?? ''}`,
+  };
+  adminSocket.connect();
+}
 
 export default adminSocket;

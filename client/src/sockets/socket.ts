@@ -9,12 +9,23 @@ import type {
   ServerToClientEvents,
 } from '../../../server/src/sockets/events';
 
-const token = localStorage.getItem('token');
+function createSocket() {
+  return io(URL, {
+    extraHeaders: {
+      authorization: `bearer ${localStorage.getItem('token') ?? ''}`,
+    },
+  });
+}
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(URL, {
-  extraHeaders: {
-    authorization: `bearer ${token}`,
-  },
-});
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
+  createSocket();
+
+export function reconnectSocket() {
+  socket.disconnect();
+  socket.io.opts.extraHeaders = {
+    authorization: `bearer ${localStorage.getItem('token') ?? ''}`,
+  };
+  socket.connect();
+}
 
 export default socket;
