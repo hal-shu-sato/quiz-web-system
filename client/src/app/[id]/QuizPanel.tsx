@@ -10,12 +10,30 @@ import socket from '@/sockets/socket';
 
 import { AnswerView, JudgeView, QuestionView, WaitView } from './_components';
 
-import type { Judge } from '../../../../server/src/sockets/events';
+import type {
+  AnswerWithJudge,
+  Question,
+} from '../../../../server/src/sockets/events';
 import type { SessionStates } from '../admin/[id]/_components/StateChangeButtons';
+
+function getParticipantId() {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+
+  return localStorage.getItem('participantId') ?? undefined;
+}
 
 export default function QuizPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
-  const [judge, setJudge] = useState<Judge | null>(null);
+  const [question, setQuestion] = useState<Question>({
+    id: '',
+    title: '問題未設定',
+    max_points: 0,
+    type: 'normal',
+  });
+  const [answers, setAnswers] = useState<AnswerWithJudge[]>([]);
+  const [participantId, setParticipantId] = useState<string | undefined>();
 
   const router = useRouter();
 
@@ -30,42 +48,30 @@ export default function QuizPanel({ id }: { id: string }) {
   );
 
   useEffect(() => {
-    function onConnect() {
-      console.log('Socket connected');
+    setParticipantId(getParticipantId());
+  }, []);
 
-      socket.io.engine.on('upgrade', (transport) => {
-        console.log(`Transport upgraded to: ${transport.name}`);
-      });
-    }
-
+  useEffect(() => {
     function onUpdateState(newState: SessionStates) {
-      console.log(`Session state changed to: ${newState}`);
       setSessionState(newState);
     }
 
-    function onUpdateJudge(judge: Judge) {
-      console.log(`Judge updated: ${judge.judgment_result}`);
-      setJudge(judge);
+    function onUpdateQuestion(nextQuestion: Question) {
+      setQuestion(nextQuestion);
     }
 
-    function onDisconnect() {
-      console.log('Socket disconnected');
+    function onUpdateAnswers(nextAnswers: AnswerWithJudge[]) {
+      setAnswers(nextAnswers);
     }
 
-    if (socket.connected) {
-      onConnect();
-    }
-
-    socket.on('connect', onConnect);
     socket.on('state:updated', onUpdateState);
-    socket.on('judge:updated', onUpdateJudge);
-    socket.on('disconnect', onDisconnect);
+    socket.on('question:updated', onUpdateQuestion);
+    socket.on('answers:updated', onUpdateAnswers);
 
     return () => {
-      socket.off('connect', onConnect);
       socket.off('state:updated', onUpdateState);
-      socket.off('judge:updated', onUpdateJudge);
-      socket.off('disconnect', onDisconnect);
+      socket.off('question:updated', onUpdateQuestion);
+      socket.off('answers:updated', onUpdateAnswers);
     };
   }, []);
 
@@ -78,19 +84,26 @@ export default function QuizPanel({ id }: { id: string }) {
     return <Box>Error loading session. Redirecting to home...</Box>;
   }
 
+  const activeQuestionId = question.id || data.currentQuestionId || '';
+
   return (
     <Container>
       <Typography component="h1" variant="h4">
         Quiz Panel for {data.title}
       </Typography>
       {sessionState === 'wait' && <WaitView />}
-      {sessionState === 'question' && <QuestionView />}
-      {sessionState === 'answer' && <AnswerView />}
+      {sessionState === 'question' && <QuestionView title={question.title} />}
+      {sessionState === 'answer' && (
+        <AnswerView
+          questionId={activeQuestionId}
+          participantId={participantId}
+        />
+      )}
       {(sessionState === 'judge' ||
         sessionState === 'answer_check' ||
         sessionState === 'judge_check') && (
         <JudgeView
-          judge={judge}
+          answers={answers}
           showAnswer={
             sessionState === 'answer_check' || sessionState === 'judge_check'
           }

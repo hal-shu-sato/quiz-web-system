@@ -1,19 +1,38 @@
-import type { Judge } from '../../../../../../server/src/sockets/events';
+import { Typography } from '@mui/material';
+
+import AnswersRevealGrid from '@/components/AnswersRevealGrid';
+
+import type { AnswerWithJudge } from '../../../../../../server/src/sockets/events';
 
 export default function JudgeView({
-  judge,
+  answers,
   showAnswer,
   showJudge,
 }: {
-  judge: Judge | null;
+  answers: AnswerWithJudge[];
   showAnswer: boolean;
   showJudge: boolean;
 }) {
-  if (showAnswer && showJudge) {
-    return <div>あなたの回答は{judge?.judgment_result}です！</div>;
+  if (!showAnswer) {
+    return <Typography>採点中...</Typography>;
   }
-  if (showAnswer) {
-    return <div>あなたの回答はこちらです！</div>;
-  }
-  return <div>採点中...</div>;
+
+  const revealAnswers = answers.map((answer) => ({
+    id: answer.id,
+    participant_name: answer.participant_name,
+    answer_text: 'answer_text' in answer ? answer.answer_text : undefined,
+    answer_image_url:
+      'answer_image_url' in answer ? answer.answer_image_url : undefined,
+    judgment_result: answer.judgment_result,
+    awarded_points: answer.awarded_points,
+  }));
+
+  return (
+    <AnswersRevealGrid
+      answers={revealAnswers}
+      showAnswers={showAnswer}
+      showJudges={showJudge}
+      emptyMessage="表示できる回答がまだありません"
+    />
+  );
 }

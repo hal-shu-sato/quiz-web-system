@@ -1,3 +1,3 @@
-export default function QuestionView() {
-  return <div>問題が出題されました！</div>;
+export default function QuestionView({ title }: { title: string }) {
+  return <div>問題: {title}</div>;
 }
