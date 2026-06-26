@@ -23,12 +23,25 @@ enum State {
   JUDGE_CHECK
 }
 
+enum ScreenState {
+  LINKED
+  ANSWERS
+  JUDGES
+  SCORES
+}
+
+enum QuestionType {
+  NORMAL
+  DOBON
+}
+
 model Session {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title             String    @default("")
-  currentQuestionId String?   @unique @db.Uuid
-  state             State     @default(WAIT)
-  code              String?   @unique
+  id                String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title             String      @default("")
+  currentQuestionId String?     @unique @db.Uuid
+  state             State       @default(WAIT)
+  screenState       ScreenState @default(LINKED)
+  code              String?     @unique
   startAt           DateTime?
   endAt             DateTime?
 
@@ -53,10 +66,11 @@ model Participant {
 }
 
 model Question {
-  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  sessionId String @db.Uuid
-  title     String @default("")
-  maxPoints Int    @default(0)
+  id        String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId String       @db.Uuid
+  title     String       @default("")
+  maxPoints Int          @default(0)
+  type      QuestionType @default(NORMAL)
 
   session          Session  @relation(fields: [sessionId], references: [id])
   currentInSession Session? @relation("CurrentQuestion")
