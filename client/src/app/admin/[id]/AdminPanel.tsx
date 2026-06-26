@@ -36,81 +36,23 @@ import type {
 const leftPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 8 };
 const rightPanelSize: ResponsiveStyleValue<GridSize> = { xs: 12, md: 4 };
 
+const EMPTY_QUESTION: Question = {
+  id: '',
+  title: '問題未設定',
+  max_points: 0,
+  type: 'normal',
+};
+
 export default function AdminPanel({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');
   const [screenState, setScreenState] = useState<ScreenStates>('linked');
-  const [participants, setParticipants] = useState<Participant[]>([
-    {
-      id: '1',
-      name: 'Alice',
-      score: 100,
-      is_dobon: false,
-      answer_order: 1,
-    },
-    {
-      id: '2',
-      name: 'Bob',
-      score: 80,
-      is_dobon: false,
-      answer_order: 2,
-    },
-  ]);
-  const [question, setQuestion] = useState<Question>({
-    id: 'sample1',
-    title: 'サンプル問題',
-    max_points: 0,
-    type: 'normal',
-  });
-  const [answers, setAnswers] = useState<AnswerWithJudge[]>([
-    {
-      id: '1',
-      participant_id: '1',
-      participant_name: 'Alice',
-      question_id: 'sample1',
-      answer_text: 'Sample Answer 1',
-      judgment_result: 'correct',
-      awarded_points: 10,
-    },
-    {
-      id: '2',
-      participant_id: '2',
-      participant_name: 'Bob',
-      question_id: 'sample1',
-      answer_image_url: 'https://picsum.photos/640/360',
-      judgment_result: 'incorrect',
-      awarded_points: 0,
-    },
-    {
-      id: '3',
-      participant_id: '3',
-      participant_name: 'Charlie',
-      question_id: 'sample1',
-      answer_text: 'Sample Answer 2',
-      judgment_result: 'partial',
-      awarded_points: 5,
-    },
-    {
-      id: '4',
-      participant_id: '4',
-      participant_name: 'David',
-      question_id: 'sample1',
-      answer_image_url: 'https://picsum.photos/640/360',
-      judgment_result: 'dobon',
-      awarded_points: 0,
-    },
-  ]);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [question, setQuestion] = useState<Question>(EMPTY_QUESTION);
+  const [answers, setAnswers] = useState<AnswerWithJudge[]>([]);
 
   const router = useRouter();
 
   useEffect(() => {
-    function onConnect() {
-      console.log('Admin socket connected');
-
-      adminSocket.io.engine.on('upgrade', (transport) => {
-        console.log(`Transport upgraded to: ${transport.name}`);
-      });
-    }
-
     function onConnectError(err: Error & { code?: number }) {
       console.error('Admin socket connection error:', err.message);
 
@@ -120,57 +62,56 @@ export default function AdminPanel({ id }: { id: string }) {
     }
 
     function onUpdateState(newState: SessionStates) {
-      console.log(`Session state changed to: ${newState}`);
       setSessionState(newState);
     }
 
     function onUpdateScreen(newScreen: ScreenStates) {
-      console.log(`Screen state changed to: ${newScreen}`);
       setScreenState(newScreen);
     }
 
-    function onUpdateParticipants(participants: Participant[]) {
-      console.log(`Participants updated: ${participants.length}`);
-      setParticipants(participants);
+    function onUpdateParticipants(nextParticipants: Participant[]) {
+      setParticipants(nextParticipants);
     }
 
-    function onUpdateQuestion(question: Question) {
-      console.log(`Question updated: ${question.title}`);
-      setQuestion(question);
+    function onUpdateQuestion(nextQuestion: Question) {
+      setQuestion(nextQuestion);
     }
 
-    function onUpdateAnswers(answers: AnswerWithJudge[]) {
-      console.log(`Answers updated: ${answers.length}`);
-      setAnswers(answers);
+    function onUpdateAnswers(nextAnswers: AnswerWithJudge[]) {
+      setAnswers(nextAnswers);
     }
 
-    function onDisconnect() {
-      console.log('Admin socket disconnected');
-    }
-
-    if (adminSocket.connected) {
-      onConnect();
-    }
-
-    adminSocket.on('connect', onConnect);
     adminSocket.on('connect_error', onConnectError);
     adminSocket.on('state:updated', onUpdateState);
     adminSocket.on('screen:updated', onUpdateScreen);
     adminSocket.on('participants:updated', onUpdateParticipants);
     adminSocket.on('question:updated', onUpdateQuestion);
     adminSocket.on('answers:updated', onUpdateAnswers);
-    adminSocket.on('disconnect', onDisconnect);
 
     return () => {
-      adminSocket.off('connect', onConnect);
+      adminSocket.off('connect_error', onConnectError);
       adminSocket.off('state:updated', onUpdateState);
       adminSocket.off('screen:updated', onUpdateScreen);
       adminSocket.off('participants:updated', onUpdateParticipants);
       adminSocket.off('question:updated', onUpdateQuestion);
       adminSocket.off('answers:updated', onUpdateAnswers);
-      adminSocket.off('disconnect', onDisconnect);
     };
   }, [router]);
+
+  const handleQuestionSave = (title: string, point: number) => {
+    const payload = {
+      title,
+      max_points: point,
+      type: 'normal' as const,
+    };
+
+    if (question.id) {
+      adminSocket.emit('question:update', question.id, payload);
+      return;
+    }
+
+    adminSocket.emit('question:create', payload);
+  };
 
   return (
     <>
@@ -206,10 +147,24 @@ export default function AdminPanel({ id }: { id: string }) {
             <Grid size={leftPanelSize}>
               <Stack spacing={2}>
                 <ProblemCard
+                  questionId={question.id}
                   title={question.title}
                   point={question.max_points}
+                  onSave={handleQuestionSave}
                 />
-                <Answers answers={answers} />
+                <Answers
+                  answers={answers}
+                  maxPoints={question.max_points}
+                  onJudge={(answerId, judgment, awardedPoints) => {
+                    adminSocket.emit('judge:update', answerId, {
+                      judgment_result: judgment,
+                      awarded_points: awardedPoints,
+                    });
+                  }}
+                  onDelete={(answerId) => {
+                    adminSocket.emit('answer:delete', answerId);
+                  }}
+                />
               </Stack>
             </Grid>
             <Grid size={rightPanelSize}>
