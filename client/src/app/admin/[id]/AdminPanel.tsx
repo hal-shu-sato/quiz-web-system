@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import {
   AppBar,
+  Button,
   Container,
   Grid,
   type GridSize,
@@ -11,6 +12,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import adminSocket from '@/sockets/adminSocket';
@@ -98,11 +100,15 @@ export default function AdminPanel({ id }: { id: string }) {
     };
   }, [router]);
 
-  const handleQuestionSave = (title: string, point: number) => {
+  const handleQuestionSave = (
+    title: string,
+    point: number,
+    type: 'normal' | 'dobon',
+  ) => {
     const payload = {
       title,
       max_points: point,
-      type: 'normal' as const,
+      type,
     };
 
     if (question.id) {
@@ -116,11 +122,20 @@ export default function AdminPanel({ id }: { id: string }) {
   return (
     <>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ gap: 2 }}>
           <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
             管理パネル
           </Typography>
-          <Typography variant="subtitle1">ID: {id}</Typography>
+          <Button
+            component={Link}
+            href={`/admin/${id}/screen`}
+            color="inherit"
+            variant="outlined"
+            size="small"
+          >
+            会場スクリーン
+          </Button>
+          <Typography variant="subtitle2">ID: {id}</Typography>
         </Toolbar>
       </AppBar>
       <Container sx={{ my: 2 }}>
@@ -150,7 +165,11 @@ export default function AdminPanel({ id }: { id: string }) {
                   questionId={question.id}
                   title={question.title}
                   point={question.max_points}
+                  type={question.type}
                   onSave={handleQuestionSave}
+                  onNextQuestion={() => {
+                    adminSocket.emit('question:next');
+                  }}
                 />
                 <Answers
                   answers={answers}
