@@ -35,6 +35,48 @@ export function mapSocketStateToPrismaState(state: SessionState): $Enums.State {
   }
 }
 
+export function mapPrismaScreenToSocket(
+  screen: $Enums.ScreenState,
+): ScreenState {
+  switch (screen) {
+    case 'LINKED':
+      return 'linked';
+    case 'ANSWERS':
+      return 'answers';
+    case 'JUDGES':
+      return 'judges';
+    case 'SCORES':
+      return 'scores';
+  }
+}
+
+export function mapSocketScreenToPrisma(
+  screen: ScreenState,
+): $Enums.ScreenState {
+  switch (screen) {
+    case 'linked':
+      return 'LINKED';
+    case 'answers':
+      return 'ANSWERS';
+    case 'judges':
+      return 'JUDGES';
+    case 'scores':
+      return 'SCORES';
+  }
+}
+
+export function mapPrismaQuestionTypeToSocket(
+  type: $Enums.QuestionType,
+): 'normal' | 'dobon' {
+  return type === 'DOBON' ? 'dobon' : 'normal';
+}
+
+export function mapSocketQuestionTypeToPrisma(
+  type: 'normal' | 'dobon',
+): $Enums.QuestionType {
+  return type === 'dobon' ? 'DOBON' : 'NORMAL';
+}
+
 export function mapPrismaJudgmentToSocket(
   result: $Enums.JudgmentResult,
 ): 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon' {
@@ -67,14 +109,4 @@ export function mapSocketJudgmentToPrisma(
     case 'dobon':
       return 'DOBON';
   }
-}
-
-const screenStates = new Map<string, ScreenState>();
-
-export function getScreenState(sessionId: string): ScreenState {
-  return screenStates.get(sessionId) ?? 'linked';
-}
-
-export function setScreenState(sessionId: string, screen: ScreenState): void {
-  screenStates.set(sessionId, screen);
 }
