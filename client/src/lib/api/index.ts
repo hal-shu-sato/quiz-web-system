@@ -6,6 +6,22 @@ import type { paths } from './openapi';
 const fetchClient = createFetchClient<paths>({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000/api/',
 });
+
+fetchClient.use({
+  onRequest({ request }) {
+    if (typeof window === 'undefined') {
+      return request;
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      request.headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return request;
+  },
+});
+
 const $api = createClient(fetchClient);
 
 export default $api;
