@@ -1,11 +1,13 @@
 import prisma from '../lib/prisma';
 
-import type { Question } from '../../generated/prisma';
+import type { Question, QuestionType } from '../../generated/prisma';
 
-export type QuestionCreationParams = Pick<
-  Question,
-  'sessionId' | 'title' | 'maxPoints'
->;
+export type QuestionCreationParams = {
+  sessionId: string;
+  title: string;
+  maxPoints: number;
+  type?: QuestionType;
+};
 export type QuestionUpdateParams = Partial<Question>;
 
 export class QuestionService {
@@ -15,6 +17,7 @@ export class QuestionService {
         sessionId: data.sessionId,
         title: data.title,
         maxPoints: data.maxPoints,
+        type: data.type ?? 'NORMAL',
       },
     });
   }

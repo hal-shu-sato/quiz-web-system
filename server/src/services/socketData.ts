@@ -1,6 +1,7 @@
 import prisma from '../lib/prisma';
 import {
   mapPrismaJudgmentToSocket,
+  mapPrismaQuestionTypeToSocket,
   mapPrismaStateToSocketState,
 } from '../util/enum';
 
@@ -28,7 +29,7 @@ export class SocketDataService {
       id: session.currentQuestion.id,
       title: session.currentQuestion.title,
       max_points: session.currentQuestion.maxPoints,
-      type: 'normal',
+      type: mapPrismaQuestionTypeToSocket(session.currentQuestion.type),
     };
   }
 
