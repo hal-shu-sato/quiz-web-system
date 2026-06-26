@@ -81,6 +81,10 @@ export function initializeSocket(httpServer: HttpServer) {
 
       socket.emit('state:updated', state);
       socket.emit('question:updated', await socketData.getQuestion(sessionId));
+      socket.emit(
+        'participants:updated',
+        await socketData.getParticipants(sessionId),
+      );
 
       if (state === 'answer_check' || state === 'judge_check') {
         socket.emit('answers:updated', await socketData.getAnswers(sessionId));

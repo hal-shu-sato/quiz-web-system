@@ -1,6 +1,6 @@
-import { getScreenState } from '../util/enum';
-
 import { SocketDataService } from '../services/socketData';
+import { SessionService } from '../services/session';
+import { mapPrismaScreenToSocket } from '../util/enum';
 
 import type {
   AdminClientToServerEvents,
@@ -13,6 +13,15 @@ import type { Namespace, Server } from 'socket.io';
 
 function shouldRevealAnswersToParticipants(state: SessionState | null) {
   return state === 'answer_check' || state === 'judge_check';
+}
+
+async function getScreenStateForSession(sessionId: string) {
+  const session = await new SessionService().getById(sessionId);
+  if (!session) {
+    return 'linked' as const;
+  }
+
+  return mapPrismaScreenToSocket(session.screenState);
 }
 
 export async function broadcastSessionState(
@@ -47,12 +56,12 @@ export async function broadcastScreenState(
   >,
   sessionId: string,
 ) {
-  adminNamespace
-    .to(sessionId)
-    .emit('screen:updated', getScreenState(sessionId));
+  const screen = await getScreenStateForSession(sessionId);
+  adminNamespace.to(sessionId).emit('screen:updated', screen);
 }
 
 export async function broadcastParticipants(
+  io: Server<ClientToServerEvents, ServerToClientEvents>,
   adminNamespace: Namespace<
     AdminClientToServerEvents,
     AdminServerToClientEvents
@@ -61,6 +70,7 @@ export async function broadcastParticipants(
 ) {
   const participants = await new SocketDataService().getParticipants(sessionId);
   adminNamespace.to(sessionId).emit('participants:updated', participants);
+  io.to(sessionId).emit('participants:updated', participants);
 }
 
 export async function broadcastQuestion(
@@ -110,20 +120,22 @@ export async function broadcastAdminSnapshot(
     return;
   }
 
-  const [participants, question, answers] = await Promise.all([
+  const [participants, question, answers, screen] = await Promise.all([
     socketData.getParticipants(sessionId),
     socketData.getQuestion(sessionId),
     socketData.getAnswers(sessionId),
+    getScreenStateForSession(sessionId),
   ]);
 
   const room = adminNamespace.to(sessionId);
   room.emit('state:updated', state);
-  room.emit('screen:updated', getScreenState(sessionId));
+  room.emit('screen:updated', screen);
   room.emit('participants:updated', participants);
   room.emit('question:updated', question);
   room.emit('answers:updated', answers);
   io.to(sessionId).emit('state:updated', state);
   io.to(sessionId).emit('question:updated', question);
+  io.to(sessionId).emit('participants:updated', participants);
 
   if (shouldRevealAnswersToParticipants(state)) {
     io.to(sessionId).emit('answers:updated', answers);

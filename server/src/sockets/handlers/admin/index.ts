@@ -2,6 +2,7 @@ import {
   broadcastAnswers,
   broadcastParticipants,
   broadcastQuestion,
+  broadcastScreenState,
   broadcastSessionState,
 } from '../../broadcast';
 import { deleteImageFile } from '../../../lib/image';
@@ -12,8 +13,9 @@ import { SessionService } from '../../../services/session';
 import {
   mapPrismaJudgmentToSocket,
   mapSocketJudgmentToPrisma,
+  mapSocketQuestionTypeToPrisma,
+  mapSocketScreenToPrisma,
   mapSocketStateToPrismaState,
-  setScreenState,
 } from '../../../util/enum';
 
 import type {
@@ -24,6 +26,18 @@ import type {
 } from '../../events';
 import type { Namespace, Server, Socket } from 'socket.io';
 import type { Request } from 'express';
+
+function createQuestionPayload(question: {
+  title: string;
+  max_points: number;
+  type: 'normal' | 'dobon';
+}) {
+  return {
+    title: question.title,
+    maxPoints: question.max_points,
+    type: mapSocketQuestionTypeToPrisma(question.type),
+  };
+}
 
 export function registerHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents>,
@@ -39,10 +53,12 @@ export function registerHandlers(
   }
 
   const sessionId = user.sessionId;
+  const sessionService = new SessionService();
+  const questionService = new QuestionService();
 
   socket.on('state:update', (state) => {
     void (async () => {
-      await new SessionService().update(sessionId, {
+      await sessionService.update(sessionId, {
         state: mapSocketStateToPrismaState(state),
       });
       await broadcastSessionState(io, namespace, sessionId);
@@ -50,19 +66,22 @@ export function registerHandlers(
   });
 
   socket.on('screen:update', (screen) => {
-    setScreenState(sessionId, screen);
-    namespace.to(sessionId).emit('screen:updated', screen);
+    void (async () => {
+      await sessionService.update(sessionId, {
+        screenState: mapSocketScreenToPrisma(screen),
+      });
+      await broadcastScreenState(namespace, sessionId);
+    })();
   });
 
   socket.on('question:create', (question) => {
     void (async () => {
-      const created = await new QuestionService().create({
+      const created = await questionService.create({
         sessionId,
-        title: question.title,
-        maxPoints: question.max_points,
+        ...createQuestionPayload(question),
       });
 
-      await new SessionService().update(sessionId, {
+      await sessionService.update(sessionId, {
         currentQuestionId: created.id,
       });
 
@@ -74,22 +93,41 @@ export function registerHandlers(
   socket.on('question:update', (id, question) => {
     void (async () => {
       if (id) {
-        await new QuestionService().update(id, {
-          title: question.title,
-          maxPoints: question.max_points,
-        });
+        await questionService.update(id, createQuestionPayload(question));
       } else {
-        const created = await new QuestionService().create({
+        const created = await questionService.create({
           sessionId,
-          title: question.title,
-          maxPoints: question.max_points,
+          ...createQuestionPayload(question),
         });
-        await new SessionService().update(sessionId, {
+        await sessionService.update(sessionId, {
           currentQuestionId: created.id,
         });
       }
 
       await broadcastQuestion(io, namespace, sessionId);
+    })();
+  });
+
+  socket.on('question:next', () => {
+    void (async () => {
+      const questions = await questionService.listBySessionId(sessionId);
+      const created = await questionService.create({
+        sessionId,
+        title: `問題 ${questions.length + 1}`,
+        maxPoints: 0,
+        type: 'NORMAL',
+      });
+
+      await sessionService.update(sessionId, {
+        currentQuestionId: created.id,
+        state: 'WAIT',
+        screenState: 'LINKED',
+      });
+
+      await broadcastSessionState(io, namespace, sessionId);
+      await broadcastScreenState(namespace, sessionId);
+      await broadcastQuestion(io, namespace, sessionId);
+      await broadcastAnswers(io, namespace, sessionId);
     })();
   });
 
@@ -135,7 +173,7 @@ export function registerHandlers(
       }
 
       await broadcastAnswers(io, namespace, sessionId);
-      await broadcastParticipants(namespace, sessionId);
+      await broadcastParticipants(io, namespace, sessionId);
     })();
   });
 
@@ -158,7 +196,7 @@ export function registerHandlers(
       await deleteImageFile(answer.answerImagePath);
       await new AnswerService().delete(id);
       await broadcastAnswers(io, namespace, sessionId);
-      await broadcastParticipants(namespace, sessionId);
+      await broadcastParticipants(io, namespace, sessionId);
     })();
   });
 }

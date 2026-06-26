@@ -86,7 +86,7 @@ export function registerHandlers(
       }
 
       await broadcastAnswers(_io, adminNamespace, sessionId);
-      await broadcastParticipants(adminNamespace, sessionId);
+      await broadcastParticipants(_io, adminNamespace, sessionId);
 
       const answers = await new SocketDataService().getAnswers(sessionId);
       const created = answers.find(

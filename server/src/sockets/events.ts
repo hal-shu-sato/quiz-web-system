@@ -60,6 +60,8 @@ export interface ServerToClientEvents {
 
   'answers:updated': (answers: AnswerWithJudge[]) => void;
 
+  'participants:updated': (participants: Participant[]) => void;
+
   'judge:updated': (judge: Judge) => void;
 }
 
@@ -89,6 +91,8 @@ export interface AdminClientToServerEvents {
   'question:create': (question: Omit<Question, 'id'>) => void;
 
   'question:update': (id: string, question: Omit<Question, 'id'>) => void;
+
+  'question:next': () => void;
 
   'judge:update': (answer_id: string, judge: Omit<Judge, 'answer_id'>) => void;
 
