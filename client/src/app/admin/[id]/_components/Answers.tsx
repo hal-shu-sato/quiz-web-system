@@ -10,6 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 
+import { toAbsoluteFileUrl } from '@/lib/fileUrl';
+
 function getResult(
   result: 'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon',
 ) {
@@ -44,8 +46,18 @@ type ImageAnswer = AnswerBase & {
 
 export default function Answers({
   answers,
+  maxPoints,
+  onJudge,
+  onDelete,
 }: {
   answers: (TextAnswer | ImageAnswer)[];
+  maxPoints: number;
+  onJudge: (
+    answerId: string,
+    judgment: 'correct' | 'partial' | 'incorrect' | 'dobon',
+    awardedPoints: number,
+  ) => void;
+  onDelete: (answerId: string) => void;
 }) {
   return (
     <Card>
@@ -56,7 +68,10 @@ export default function Answers({
             <Grid size={{ xs: 12, sm: 6 }} key={answer.id}>
               <Card>
                 {'answer_image_url' in answer && (
-                  <CardMedia component="img" image={answer.answer_image_url} />
+                  <CardMedia
+                    component="img"
+                    image={toAbsoluteFileUrl(answer.answer_image_url)}
+                  />
                 )}
                 {'answer_text' in answer && (
                   <CardContent>
@@ -71,12 +86,42 @@ export default function Answers({
                 />
                 <CardActions sx={{ justifyContent: 'space-between' }}>
                   <ButtonGroup variant="text" size="small">
-                    <Button color="primary">正解</Button>
-                    <Button color="success">部分点</Button>
-                    <Button color="error">不正解</Button>
-                    <Button color="secondary">ドボン</Button>
+                    <Button
+                      color="primary"
+                      onClick={() => onJudge(answer.id, 'correct', maxPoints)}
+                    >
+                      正解
+                    </Button>
+                    <Button
+                      color="success"
+                      onClick={() =>
+                        onJudge(
+                          answer.id,
+                          'partial',
+                          Math.max(1, Math.floor(maxPoints / 2)),
+                        )
+                      }
+                    >
+                      部分点
+                    </Button>
+                    <Button
+                      color="error"
+                      onClick={() => onJudge(answer.id, 'incorrect', 0)}
+                    >
+                      不正解
+                    </Button>
+                    <Button
+                      color="secondary"
+                      onClick={() => onJudge(answer.id, 'dobon', 0)}
+                    >
+                      ドボン
+                    </Button>
                   </ButtonGroup>
-                  <Button size="small" color="error">
+                  <Button
+                    size="small"
+                    color="error"
+                    onClick={() => onDelete(answer.id)}
+                  >
                     削除
                   </Button>
                 </CardActions>
