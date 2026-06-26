@@ -6,46 +6,88 @@ import { UnauthorizedError } from './errors';
 
 import type { Request } from 'express';
 
+type JwtPayload = {
+  data: Express.User;
+};
+
+function extractToken(request: Request): string | undefined {
+  const authHeader = request.headers.authorization;
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.slice(7);
+  }
+
+  if (typeof authHeader === 'string') {
+    return authHeader;
+  }
+
+  const bodyToken = request.body?.token;
+  if (typeof bodyToken === 'string') {
+    return bodyToken;
+  }
+
+  const queryToken = request.query?.token;
+  if (typeof queryToken === 'string') {
+    return queryToken;
+  }
+
+  const headerToken = request.headers['x-access-token'];
+  if (typeof headerToken === 'string') {
+    return headerToken;
+  }
+
+  return undefined;
+}
+
 export function expressAuthentication(
   request: Request,
   securityName: string,
   scopes?: string[],
 ): Promise<Express.User> {
   if (securityName === 'jwt') {
-    const token =
-      request.body.token ||
-      request.query.token ||
-      request.headers['x-access-token'];
+    const token = extractToken(request);
 
     return new Promise((resolve, reject) => {
       if (!token) {
         reject(new Error('No token provided'));
+        return;
       }
+
       jwt.verify(
         token,
         config.jwtSecret,
+        {
+          issuer: config.jwtIssuer,
+          audience: config.jwtAudience,
+        },
         (err: jwt.VerifyErrors | null, decoded?: string | jwt.JwtPayload) => {
           if (err) {
             reject(err);
-          } else {
-            if (!decoded || typeof decoded === 'string') {
-              reject(new Error('Invalid token'));
-              return;
-            }
+            return;
+          }
 
-            const { scope, sessionId, participantId } = decoded;
+          if (!decoded || typeof decoded === 'string') {
+            reject(new Error('Invalid token'));
+            return;
+          }
 
-            if (scopes) {
-              // Check if JWT contains all required scopes
-              for (const scope of scopes) {
-                if (!decoded.scopes.includes(scope)) {
-                  reject(new Error('JWT does not contain required scope.'));
-                }
+          const payload = decoded as JwtPayload;
+          const user = payload.data;
+
+          if (!user?.sessionId || !user?.participantId || !user?.scope) {
+            reject(new Error('Invalid token payload'));
+            return;
+          }
+
+          if (scopes) {
+            for (const requiredScope of scopes) {
+              if (user.scope !== requiredScope) {
+                reject(new Error('JWT does not contain required scope.'));
+                return;
               }
             }
-
-            resolve({ scope, sessionId, participantId });
           }
+
+          resolve(user);
         },
       );
     });
