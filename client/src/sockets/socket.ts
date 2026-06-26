@@ -9,10 +9,19 @@ import type {
   ServerToClientEvents,
 } from '../../../server/src/sockets/events';
 
+function readToken() {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  return localStorage.getItem('token') ?? '';
+}
+
 function createSocket() {
   return io(URL, {
+    autoConnect: typeof window !== 'undefined',
     extraHeaders: {
-      authorization: `bearer ${localStorage.getItem('token') ?? ''}`,
+      authorization: `bearer ${readToken()}`,
     },
   });
 }
@@ -23,7 +32,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
 export function reconnectSocket() {
   socket.disconnect();
   socket.io.opts.extraHeaders = {
-    authorization: `bearer ${localStorage.getItem('token') ?? ''}`,
+    authorization: `bearer ${readToken()}`,
   };
   socket.connect();
 }
