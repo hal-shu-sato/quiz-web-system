@@ -59,7 +59,7 @@ export class SessionsController extends Controller {
       {
         issuer: config.jwtIssuer,
         audience: config.jwtAudience,
-        expiresIn: '1h',
+        expiresIn: '24h',
       },
     );
 
