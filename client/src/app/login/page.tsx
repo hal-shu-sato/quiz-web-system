@@ -14,9 +14,10 @@ import {
 import { useRouter } from 'next/navigation';
 
 import Link from '@/components/link';
+import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 import $api from '@/lib/api';
 
-export default function Home() {
+export default function LoginPage() {
   const [sessionCode, setSessionCode] = useState('');
   const [reconnectionCode, setReconnectionCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,12 +39,15 @@ export default function Home() {
       },
       {
         onSuccess: (data) => {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('participantId', data.participant.id);
+          persistAuthSession({
+            token: data.token,
+            participantId: data.participant.id,
+          });
+          reconnectSockets('participant');
           router.push(`/${data.session.id}`);
         },
-        onError: (error) => {
-          setError(error.message);
+        onError: (loginError) => {
+          setError(loginError.message);
           setLoading(false);
         },
       },
@@ -55,7 +59,7 @@ export default function Home() {
       <Paper elevation={3} sx={{ p: 3 }}>
         <Stack spacing={2}>
           <Typography variant="h4" component="h1">
-            ログイン
+            再接続ログイン
           </Typography>
           <Link href="/">新規参加はこちら</Link>
           {error && <Alert severity="error">{error}</Alert>}
@@ -80,7 +84,7 @@ export default function Home() {
             disabled={loading || !sessionCode || !reconnectionCode}
             onClick={handleSubmit}
           >
-            {loading ? '参加中...' : '参加'}
+            {loading ? 'ログイン中...' : '参加を再開'}
           </Button>
         </Stack>
       </Paper>

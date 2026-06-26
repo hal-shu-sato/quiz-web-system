@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
+import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 import $api from '@/lib/api';
 
 export default function AdminLogin() {
@@ -34,11 +35,12 @@ export default function AdminLogin() {
       },
       {
         onSuccess: (data) => {
-          localStorage.setItem('token', data.token);
+          persistAuthSession({ token: data.token });
+          reconnectSockets('admin');
           router.push(`/admin/${data.session.id}`);
         },
-        onError: (error) => {
-          setError(error.message);
+        onError: (loginError) => {
+          setError(loginError.message);
           setLoading(false);
         },
       },

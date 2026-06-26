@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
+import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 import $api from '@/lib/api';
 
 export default function AdminCreate() {
@@ -32,7 +33,8 @@ export default function AdminCreate() {
       { body: { title, code: sessionCode } },
       {
         onSuccess: (data) => {
-          localStorage.setItem('token', data.token);
+          persistAuthSession({ token: data.token });
+          reconnectSockets('admin');
           router.push(`/admin/${data.session.id}`);
         },
         onError: (err) => {
