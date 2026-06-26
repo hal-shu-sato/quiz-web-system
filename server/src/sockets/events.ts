@@ -39,7 +39,9 @@ type ImageAnswer = AnswerBase & {
 
 export type Answer = TextAnswer | ImageAnswer;
 
-export type AnswerWithImage = AnswerBase & {
+export type AnswerWithImage = {
+  participant_id: string;
+  question_id: string;
   answer_base64?: string;
 };
 
@@ -54,12 +56,16 @@ export type AnswerWithJudge = Answer & Omit<Judge, 'answer_id'>;
 export interface ServerToClientEvents {
   'state:updated': (state: SessionState) => void;
 
+  'question:updated': (question: Question) => void;
+
+  'answers:updated': (answers: AnswerWithJudge[]) => void;
+
   'judge:updated': (judge: Judge) => void;
 }
 
 export interface ClientToServerEvents {
   'answer:create': (
-    answer: Omit<TextAnswer, 'id'> | Omit<AnswerWithImage, 'id'>,
+    answer: Omit<TextAnswer, 'id' | 'participant_name'> | AnswerWithImage,
   ) => void;
 }
 
