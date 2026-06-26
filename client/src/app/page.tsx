@@ -6,6 +6,10 @@ import {
   Alert,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Paper,
   Stack,
   TextField,
@@ -14,14 +18,16 @@ import {
 import { useRouter } from 'next/navigation';
 
 import Link from '@/components/link';
+import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 import $api from '@/lib/api';
 
 export default function Home() {
   const [sessionCode, setSessionCode] = useState('');
   const [name, setName] = useState('');
-  const [reconnectionCode, setReconnectionCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [issuedCode, setIssuedCode] = useState('');
+  const [pendingSessionId, setPendingSessionId] = useState('');
 
   const router = useRouter();
 
@@ -35,21 +41,29 @@ export default function Home() {
         body: {
           code: sessionCode,
           name: name,
-          reconnectionCode: reconnectionCode,
         },
       },
       {
         onSuccess: (data) => {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('participantId', data.participant.id);
-          router.push(`/${data.session.id}`);
+          persistAuthSession({
+            token: data.token,
+            participantId: data.participant.id,
+          });
+          reconnectSockets('participant');
+          setIssuedCode(data.participant.reconnectionCode ?? '');
+          setPendingSessionId(data.session.id);
+          setLoading(false);
         },
-        onError: (error) => {
-          setError(error.message);
+        onError: (joinError) => {
+          setError(joinError.message);
           setLoading(false);
         },
       },
     );
+  };
+
+  const handleEnterSession = () => {
+    router.push(`/${pendingSessionId}`);
   };
 
   return (
@@ -59,7 +73,7 @@ export default function Home() {
           <Typography variant="h4" component="h1">
             参加
           </Typography>
-          <Link href="/login">ログインはこちら</Link>
+          <Link href="/login">再接続ログインはこちら</Link>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="セッションコード"
@@ -76,23 +90,38 @@ export default function Home() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <TextField
-            label="再接続コード"
-            fullWidth
-            required
-            value={reconnectionCode}
-            onChange={(e) => setReconnectionCode(e.target.value)}
-          />
           <Button
             variant="contained"
             fullWidth
-            disabled={loading || !sessionCode || !name || !reconnectionCode}
+            disabled={loading || !sessionCode || !name}
             onClick={handleSubmit}
           >
             {loading ? '参加中...' : '参加'}
           </Button>
         </Stack>
       </Paper>
+
+      <Dialog open={!!issuedCode} onClose={handleEnterSession} fullWidth>
+        <DialogTitle>参加が完了しました</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <Typography>
+              再接続用コードを控えてください。端末を変えたときや再接続時に使います。
+            </Typography>
+            <Alert
+              severity="info"
+              sx={{ fontSize: 24, justifyContent: 'center' }}
+            >
+              {issuedCode}
+            </Alert>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleEnterSession}>
+            クイズ画面へ進む
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
