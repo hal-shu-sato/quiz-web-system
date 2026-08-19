@@ -10,6 +10,7 @@
     "build:ts": "tsc -p .",
     "db:deploy": "run-s prisma:deploy prisma:generate",
     "dev": "run-p watch:*",
+    "generate": "run-s prisma:generate tsoa",
     "lint:ts": "tsc --incremental false --noEmit",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",

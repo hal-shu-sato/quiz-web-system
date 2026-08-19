@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:prisma@localhost:5432/postgres?schema=public
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/setup@v2
