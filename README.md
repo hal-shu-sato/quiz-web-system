@@ -9,10 +9,12 @@
 
 ## セットアップ
 
+Node.js 22 以降と [pnpm](https://pnpm.io/) 11 が必要です。
+
 ### 1. 依存関係
 
 ```bash
-yarn install
+pnpm install
 ```
 
 ### 2. データベース
@@ -24,8 +26,7 @@ docker compose up -d postgres_db
 `server/.env` を `server/.env.example` から作成し、`DATABASE_URL` を設定してください。
 
 ```bash
-cd server
-yarn prisma:deploy
+pnpm --filter ./server prisma:deploy
 ```
 
 ### 3. 環境変数
@@ -36,7 +37,7 @@ yarn prisma:deploy
 ### 4. 開発サーバー
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 - 参加者: http://localhost:3000
@@ -53,8 +54,8 @@ yarn dev
 ## 本番ビルド
 
 ```bash
-yarn build
-yarn start
+pnpm build
+pnpm start
 ```
 
 Docker Compose の `server` サービスは API のみを起動します。クライアントは別途デプロイしてください。

@@ -1,6 +1,7 @@
 client/.next
 client/src/lib/api/openapi.d.ts
 node_modules
+pnpm-lock.yaml
 server/build
 server/dist
 server/generated

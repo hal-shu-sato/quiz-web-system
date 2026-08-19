@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "run-s oa-type",
+    "prebuild": "pnpm run oa-type",
     "build": "next build",
     "dev": "next dev",
     "lint:ts": "tsc --incremental false --noEmit",
@@ -31,7 +31,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "eslint-config-next": "^15.5.23",
-    "openapi-typescript": "^7.13.0"
-  },
-  "packageManager": "yarn@1.22.22"
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.3"
+  }
 }

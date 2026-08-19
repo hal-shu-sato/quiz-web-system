@@ -4,17 +4,13 @@
   "repository": "https://github.com/hal-shu-sato/quiz-web-system.git",
   "license": "UNLICENSED",
   "author": "ato lash <28973861+hal-shu-sato@users.noreply.github.com>",
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
     "build": "run-s build:server build:client",
-    "build:client": "yarn workspace quiz-web-system-client build",
-    "build:server": "yarn workspace quiz-web-system-server build",
+    "build:client": "pnpm --filter ./client build",
+    "build:server": "pnpm --filter ./server build",
     "dev": "run-p dev:server dev:client",
-    "dev:client": "yarn workspace quiz-web-system-client dev",
-    "dev:server": "yarn workspace quiz-web-system-server dev",
+    "dev:client": "pnpm --filter ./client dev",
+    "dev:server": "pnpm --filter ./server dev",
     "fix": "run-s fix:eslint fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier --write .",
@@ -22,12 +18,12 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
     "lint:ts": "run-p lint:ts:client lint:ts:server",
-    "lint:ts:client": "yarn workspace quiz-web-system-client lint:ts",
-    "lint:ts:server": "yarn workspace quiz-web-system-server lint:ts",
+    "lint:ts:client": "pnpm --filter ./client lint:ts",
+    "lint:ts:server": "pnpm --filter ./server lint:ts",
     "prepare": "husky",
     "start": "run-p start:*",
-    "start:client": "yarn workspace quiz-web-system-client start",
-    "start:server": "yarn workspace quiz-web-system-server start"
+    "start:client": "pnpm --filter ./client start",
+    "start:server": "pnpm --filter ./server start"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
@@ -35,6 +31,7 @@
     "@types/node": "^26.2.0",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "globals": "^17.11.0",
     "husky": "^9.1.7",
@@ -42,8 +39,11 @@
     "npm-run-all2": "^9.0.3",
     "prettier": "^3.9.6",
     "prettier-plugin-packagejson": "^3.0.2",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.67.0"
+  },
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=22"
   }
 }
