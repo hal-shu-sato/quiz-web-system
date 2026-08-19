@@ -12,12 +12,7 @@ import {
 import type ResponsiveStyleValue from '@/types/ResponsiveStyleValue';
 
 export type SessionStates =
-  | 'wait'
-  | 'question'
-  | 'answer'
-  | 'judge'
-  | 'answer_check'
-  | 'judge_check';
+  'wait' | 'question' | 'answer' | 'judge' | 'answer_check' | 'judge_check';
 
 function StateButton({
   children,

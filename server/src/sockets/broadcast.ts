@@ -1,5 +1,5 @@
-import { SocketDataService } from '../services/socketData';
 import { SessionService } from '../services/session';
+import { SocketDataService } from '../services/socketData';
 import { mapPrismaScreenToSocket } from '../util/enum';
 
 import type {

@@ -29,6 +29,10 @@ export function initializeSocket(httpServer: HttpServer) {
     AdminServerToClientEvents
   > = io.of('/admin');
 
+  const authenticateJwt = passport.authenticate('jwt', {
+    session: false,
+  }) as (req: Request, res: Response, next: NextFunction) => void;
+
   io.engine.use(
     (
       req: Request & { _query: { sid?: string } },
@@ -37,7 +41,7 @@ export function initializeSocket(httpServer: HttpServer) {
     ) => {
       const isHandshake = req._query.sid === undefined;
       if (isHandshake) {
-        passport.authenticate('jwt', { session: false })(req, res, next);
+        authenticateJwt(req, res, next);
       } else {
         next();
       }

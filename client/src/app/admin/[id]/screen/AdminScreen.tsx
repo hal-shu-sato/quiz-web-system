@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from 'react';
 
-import adminSocket from '@/sockets/adminSocket';
 import { toAbsoluteFileUrl } from '@/lib/fileUrl';
+import adminSocket from '@/sockets/adminSocket';
 
 import { ResultScreen, ScoreScreen } from './_components';
 
-import type { ScreenStates } from '../_components/ScreenChangeButtons';
-import type { SessionStates } from '../_components/StateChangeButtons';
 import type {
   AnswerWithJudge,
   Participant,
 } from '../../../../../../server/src/sockets/events';
+import type { ScreenStates } from '../_components/ScreenChangeButtons';
+import type { SessionStates } from '../_components/StateChangeButtons';
 
 export default function AdminScreen({ id }: { id: string }) {
   const [sessionState, setSessionState] = useState<SessionStates>('wait');

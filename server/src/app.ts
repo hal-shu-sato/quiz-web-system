@@ -18,6 +18,8 @@ import type {
 import type { StrategyOptionsWithoutRequest } from 'passport-jwt';
 
 declare global {
+  // Express request.user typing requires namespace augmentation.
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User {
       scope: 'admin' | 'participant';

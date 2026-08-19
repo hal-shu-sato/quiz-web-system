@@ -18,8 +18,8 @@ import {
 import { useRouter } from 'next/navigation';
 
 import Link from '@/components/link';
-import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 import $api from '@/lib/api';
+import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 
 export default function Home() {
   const [sessionCode, setSessionCode] = useState('');

@@ -1,9 +1,5 @@
 export type JudgmentResult =
-  | 'pending'
-  | 'correct'
-  | 'partial'
-  | 'incorrect'
-  | 'dobon';
+  'pending' | 'correct' | 'partial' | 'incorrect' | 'dobon';
 
 export type AnswerDisplayMode = 'hidden' | 'original' | 'judged';
 

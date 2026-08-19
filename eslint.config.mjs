@@ -23,8 +23,13 @@ export default tseslint.config(
         projectService: {
           allowDefaultProject: ['*.mjs', 'client/*.mjs', 'server/*.mjs'],
         },
+        tsconfigRootDir: import.meta.dirname,
       },
     },
+  },
+  {
+    files: ['**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -32,6 +37,15 @@ export default tseslint.config(
       importPlugin.flatConfigs.recommended,
       importPlugin.flatConfigs.typescript,
     ],
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: ['client/tsconfig.json', 'server/tsconfig.json'],
+        },
+        node: true,
+      },
+    },
     rules: {
       'import/order': [
         'error',

@@ -1,10 +1,5 @@
 export type SessionState =
-  | 'wait'
-  | 'question'
-  | 'answer'
-  | 'judge'
-  | 'answer_check'
-  | 'judge_check';
+  'wait' | 'question' | 'answer' | 'judge' | 'answer_check' | 'judge_check';
 
 export type ScreenState = 'linked' | 'answers' | 'judges' | 'scores';
 

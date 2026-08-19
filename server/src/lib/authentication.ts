@@ -10,6 +10,15 @@ type JwtPayload = {
   data: Express.User;
 };
 
+function readStringField(value: unknown, key: string): string | undefined {
+  if (typeof value !== 'object' || value === null || !(key in value)) {
+    return undefined;
+  }
+
+  const field = (value as Record<string, unknown>)[key];
+  return typeof field === 'string' ? field : undefined;
+}
+
 function extractToken(request: Request): string | undefined {
   const authHeader = request.headers.authorization;
   if (authHeader?.startsWith('Bearer ')) {
@@ -20,8 +29,8 @@ function extractToken(request: Request): string | undefined {
     return authHeader;
   }
 
-  const bodyToken = request.body?.token;
-  if (typeof bodyToken === 'string') {
+  const bodyToken = readStringField(request.body, 'token');
+  if (bodyToken) {
     return bodyToken;
   }
 

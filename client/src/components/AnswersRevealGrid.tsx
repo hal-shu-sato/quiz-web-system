@@ -10,9 +10,8 @@ import {
 } from '@mui/material';
 
 import AnswerDisplayCanvas from '@/components/AnswerDisplayCanvas';
-import { toAbsoluteFileUrl } from '@/lib/fileUrl';
-
 import type { AnswerDisplayMode } from '@/lib/answerDisplay';
+import { toAbsoluteFileUrl } from '@/lib/fileUrl';
 
 type RevealAnswer = {
   id: string;

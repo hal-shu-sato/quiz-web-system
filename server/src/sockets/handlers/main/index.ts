@@ -1,5 +1,5 @@
-import prisma from '../../../lib/prisma';
 import { deleteImageFile, saveBase64Image } from '../../../lib/image';
+import prisma from '../../../lib/prisma';
 import { AnswerService } from '../../../services/answer';
 import { SessionService } from '../../../services/session';
 import { SocketDataService } from '../../../services/socketData';
@@ -11,8 +11,8 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '../../events';
-import type { Namespace, Server, Socket } from 'socket.io';
 import type { Request } from 'express';
+import type { Namespace, Server, Socket } from 'socket.io';
 
 export function registerHandlers(
   _io: Server<ClientToServerEvents, ServerToClientEvents>,

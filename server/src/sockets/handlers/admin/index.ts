@@ -1,10 +1,3 @@
-import {
-  broadcastAnswers,
-  broadcastParticipants,
-  broadcastQuestion,
-  broadcastScreenState,
-  broadcastSessionState,
-} from '../../broadcast';
 import { deleteImageFile } from '../../../lib/image';
 import { AnswerService } from '../../../services/answer';
 import { ParticipantService } from '../../../services/participant';
@@ -17,6 +10,13 @@ import {
   mapSocketScreenToPrisma,
   mapSocketStateToPrismaState,
 } from '../../../util/enum';
+import {
+  broadcastAnswers,
+  broadcastParticipants,
+  broadcastQuestion,
+  broadcastScreenState,
+  broadcastSessionState,
+} from '../../broadcast';
 
 import type {
   AdminClientToServerEvents,
@@ -24,8 +24,8 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '../../events';
-import type { Namespace, Server, Socket } from 'socket.io';
 import type { Request } from 'express';
+import type { Namespace, Server, Socket } from 'socket.io';
 
 function createQuestionPayload(question: {
   title: string;

@@ -10,12 +10,12 @@ import {
 } from 'tsoa';
 
 import config from '../../config';
-import { generateReconnectionCode } from '../../lib/reconnectionCode';
 import {
   NotFoundError,
   type NotFoundErrorJSON,
   type ValidateErrorJSON,
 } from '../../lib/errors';
+import { generateReconnectionCode } from '../../lib/reconnectionCode';
 import { ParticipantService } from '../../services/participant';
 import { SessionService } from '../../services/session';
 

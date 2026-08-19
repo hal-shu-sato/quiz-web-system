@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 import $api from '@/lib/api';
+import { persistAuthSession, reconnectSockets } from '@/lib/authSession';
 
 export default function AdminLogin() {
   const [sessionCode, setSessionCode] = useState('');
