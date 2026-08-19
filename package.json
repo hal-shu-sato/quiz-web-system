@@ -29,6 +29,7 @@
     "start:server": "pnpm --filter ./server start"
   },
   "devDependencies": {
+    "next": "^15.5.23",
     "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^9.39.5",
     "@types/node": "^26.2.0",
